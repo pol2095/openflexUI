@@ -8,7 +8,7 @@ The Open Flex UI add an user interface to OpenFl project.
 ## Quick Links
 
 * [Website](http://pol2095.free.fr/openflexUI/)
-* [API Reference](http://pol2095.free.fr/OpenFl-Extensions/docs/openflexUI/controls/)
+* [API Reference](http://pol2095.free.fr/openflexUI/docs/openflexUI/controls/)
 * [Discussion Forum](http://community.openfl.org/)
 * [Github Project](https://github.com/pol2095/openflexUI/)
 
