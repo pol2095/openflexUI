@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="utf-8"?>
+<project>
+	
+	<meta title="openflexUI" package="com.openflexUI" version="0.1.0" company="pol2095" />
+	<app main="Main" file="Main" path="bin" />
+	
+	<window width="600" height="500" orientation="portrait" background="0xffffff" />
+	<window resizable="false" unless="mobile" />
+	<window stencil-buffer="false" if="android" />
+	
+	<source path="src" />
+	
+	<haxelib name="openfl" />
+		
+</project>
