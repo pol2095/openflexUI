@@ -224,7 +224,7 @@ class Scroller extends UIComponent
 		viewPort.graphics.beginFill(0x000000);
         viewPort.graphics.drawRect(0, 0, 0, 0);
         viewPort.graphics.endFill();
-		previousViewPort = viewPort.getRect(this);
+		previousViewPort = new Rectangle();
 		this.mask = viewPort;
 		this.addEventListener( Event.ADDED_TO_STAGE, addedToStageHandler );
 	}
@@ -256,7 +256,7 @@ class Scroller extends UIComponent
 			viewPort.graphics.beginFill(0x000000);
 			viewPort.graphics.drawRect(0, 0, this.width, this.height);
 			viewPort.graphics.endFill();
-			previousViewPort = viewPort.getRect(this);
+			previousViewPort = rect.clone();
 		}
 		/*viewPort.width = this.width;
 		viewPort.height = this.height;*/
