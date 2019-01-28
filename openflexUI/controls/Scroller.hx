@@ -14,11 +14,24 @@ import openfl.geom.Point;
 import openfl.geom.Rectangle;
 import openflexUI.controls.UIComponent;
 
+/**
+ * The Scroller control displays a single scrollable component, called a viewport, and horizontal and vertical scroll bars.
+ */
 class Scroller extends UIComponent
 {
 	private var viewPort:Sprite = new Sprite();
-	private var horizontalScrollPolicy:String = "auto";
-	private var verticalScrollPolicy:String = "auto";
+	/**
+		 * Indicates under what conditions the horizontal scroll bar is displayed. The acceptable values are "auto" or "off".
+		 *
+		 * The default value is "auto"
+		 */
+	public var horizontalScrollPolicy:String = "auto";
+	/**
+		 * Indicates under what conditions the vertical scroll bar is displayed. The acceptable values are "auto" or "off".
+		 *
+		 * The default value is "auto"
+		 */
+	public var verticalScrollPolicy:String = "auto";
 	private var horizontalScrollBar:Sprite;
 	private var horizontalScrollBarBG:Sprite = new Sprite();
 	private var horizontalScrollBarLeft:Sprite = new Sprite();
@@ -35,6 +48,12 @@ class Scroller extends UIComponent
 	private var swipeSpeed:Float = 2;
 	private var previousMove:Point;
 	private var previousGlobalMove:Point;
+	private var previousViewPort:Rectangle;
+	/**
+		 * Swipe to scroll the viewport.
+		 *
+		 * The default value is true
+		 */
 	public var swipe:Bool = true;
 	private var previousIsPositiveSwipeX:Bool;
 	private var previousIsPositiveSwipeY:Bool;
@@ -67,7 +86,7 @@ class Scroller extends UIComponent
 		return _height = value;
 	}
 	
-	public var horizontalScrollBarVisible(get, never):Bool;
+	private var horizontalScrollBarVisible(get, never):Bool;
 	
 	private function get_horizontalScrollBarVisible()
 	{
@@ -75,7 +94,7 @@ class Scroller extends UIComponent
 		return horizontalScrollBar.visible;
 	}
 	
-	public var verticalScrollBarVisible(get, never):Bool;
+	private var verticalScrollBarVisible(get, never):Bool;
 	
 	private function get_verticalScrollBarVisible()
 	{
@@ -83,6 +102,9 @@ class Scroller extends UIComponent
 		return verticalScrollBar.visible;
 	}
 	
+	/**
+		 * Get a number that represents the maximum horizontal scroll position.
+		 */
 	public var maxHorizontalScrollBarPosition(get, never):Float;
 	
 	private function get_maxHorizontalScrollBarPosition()
@@ -95,6 +117,9 @@ class Scroller extends UIComponent
 		return contentWidth - width;
 	}
 	
+	/**
+		 * Get a number that represents the maximum vertical scroll position.
+		 */
 	public var maxVerticalScrollBarPosition(get, never):Float;
 	
 	private function get_maxVerticalScrollBarPosition()
@@ -107,19 +132,25 @@ class Scroller extends UIComponent
 		return contentHeight - height;
 	}
 	
+	/**
+		 * The x coordinate of the origin of the viewport in the component's coordinate system, where the default value is (0,0) corresponding to the upper-left corner of the component.
+		 */
 	public var horizontalScrollBarPosition(get, set):Float;
 	
 	private function get_horizontalScrollBarPosition()
 	{
+		var x:Float = 0;
+		if( ! horizontalScrollBarVisible ) return x;
 		var contentWidth:Float = this.contentWidth;
 		var contentWidthSB:Float = horizontalScrollBarRight.x - scrollerSize - 2;
-		var x:Float = horizontalScrollBarCursor.x - scrollerSize - 1;
+		x = horizontalScrollBarCursor.x - scrollerSize - 1;
 		//return horizontalScrollBarCursor.x - scrollerSize - 1;
 		return x * contentWidth / contentWidthSB;
 	}
 	
 	private function set_horizontalScrollBarPosition(x:Float)
 	{
+		if( ! horizontalScrollBarVisible ) return x;
 		var contentWidth:Float = this.contentWidth;
 		var contentWidthSB:Float = horizontalScrollBarRight.x - scrollerSize - 2;
 		x *= contentWidthSB / contentWidth;
@@ -130,19 +161,25 @@ class Scroller extends UIComponent
 		return null;
 	}
 	
+	/**
+		 * The y coordinate of the origin of the viewport in the component's coordinate system, where the default value is (0,0) corresponding to the upper-left corner of the component.
+		 */
 	public var verticalScrollBarPosition(get, set):Float;
 	
 	private function get_verticalScrollBarPosition()
 	{
+		var y:Float = 0;
+		if( ! verticalScrollBarVisible ) return y;
 		var contentHeight:Float = this.contentHeight;
 		var contentHeightSB:Float = verticalScrollBarDown.y - scrollerSize - 2;
-		var y:Float = verticalScrollBarCursor.y - scrollerSize - 1;
+		y = verticalScrollBarCursor.y - scrollerSize - 1;
 		//return verticalScrollBarCursor.y - ( scrollerSize + 1 );
 		return y * contentHeight / contentHeightSB;
 	}
 	
 	private function set_verticalScrollBarPosition(y:Float)
 	{
+		if( ! verticalScrollBarVisible ) return y;
 		var contentHeight:Float = this.contentHeight;
 		var contentHeightSB:Float = verticalScrollBarDown.y - scrollerSize - 2;
 		y *= contentHeightSB / contentHeight;
@@ -153,6 +190,9 @@ class Scroller extends UIComponent
 		return null;
 	}
 	
+	/**
+		 * The width of the viewport's contents.
+		 */
 	public var contentWidth(get, never):Float;
 	
 	private function get_contentWidth()
@@ -163,6 +203,9 @@ class Scroller extends UIComponent
 		return contentWidth;
 	}
 	
+	/**
+		 * The height of the viewport's content.
+		 */
 	public var contentHeight(get, never):Float;
 	
 	private function get_contentHeight()
@@ -173,13 +216,15 @@ class Scroller extends UIComponent
 		return contentHeight;
 	}
 	
+	@:dox(hide)
 	public function new()
 	{
 		super();
 		this.visible = false;
 		viewPort.graphics.beginFill(0x000000);
-        viewPort.graphics.drawRect(0, 0, 1, 1);
+        viewPort.graphics.drawRect(0, 0, 0, 0);
         viewPort.graphics.endFill();
+		previousViewPort = viewPort.getRect(this);
 		this.mask = viewPort;
 		this.addEventListener( Event.ADDED_TO_STAGE, addedToStageHandler );
 	}
@@ -204,10 +249,15 @@ class Scroller extends UIComponent
 		if( verticalScrollBarVisible ) previousVerticalScrollPosition = verticalScrollBarPosition;
 		//trace("CREATE VIEWPORT");
 		//trace( this.width, this.height );
-		viewPort.graphics.clear();
-		viewPort.graphics.beginFill(0x000000);
-        viewPort.graphics.drawRect(0, 0, this.width, this.height);
-        viewPort.graphics.endFill();
+		var rect:Rectangle = new Rectangle( 0, 0, this.width, this.height );
+		if( ! rect.equals( previousViewPort ) )
+		{
+			viewPort.graphics.clear();
+			viewPort.graphics.beginFill(0x000000);
+			viewPort.graphics.drawRect(0, 0, this.width, this.height);
+			viewPort.graphics.endFill();
+			previousViewPort = viewPort.getRect(this);
+		}
 		/*viewPort.width = this.width;
 		viewPort.height = this.height;*/
 		
@@ -627,6 +677,7 @@ class Scroller extends UIComponent
 		mouseChildren = true;
 	}
 	
+	@:dox(hide)
 	override public function dispose():Void
 	{
 		super.dispose();

@@ -14,16 +14,29 @@ import openflexUI.events.FlexEvent;
 import openflexUI.layout.HorizontalLayout;
 import openflexUI.layout.VerticalLayout;
 
+/**
+ * The UIComponent class is the base class for all visual components, both interactive and noninteractive.
+ */
 class UIComponent extends Sprite
 {
 	private var isCreating:Bool;
+	/**
+		 * Determines if the component has been initialized and validated for the first time.
+		 */
 	public var isCreated:Bool;
+	/**
+		 * Controls the way that the group's children are positioned and sized.
+		 */
 	public var layout:Dynamic;
 	//public var isUIComponent:Bool = true;
+	/**
+		 * Determines if the layout should use this object or ignore it.
+		 */
 	public var includeInLayout:Bool = true;
 	private var isEnd:Bool;
 	private var previousBounds:Rectangle = new Rectangle();
 	
+	@:dox(hide)
 	public function new()
 	{
 		super();
@@ -61,16 +74,25 @@ class UIComponent extends Sprite
 		invalidateDisplayList();
 	}
 	
+	/**
+		 * Marks a component so that its commitProperties() method gets called during a later screen update.
+		 */
 	public function invalidateProperties():Void
 	{
 		commitProperties();
 	}
 	
+	/**
+		 * Marks a component so that its measure() method gets called during a later screen update.
+		 */
 	public function invalidateSize():Void
 	{
 		measure();
 	}
 	
+	/**
+		 * Marks a component so that its updateDisplayList() method gets called during a later screen update.
+		 */
 	public function invalidateDisplayList():Void
 	{
 		updateDisplayList(Math.NaN, Math.NaN);
@@ -196,6 +218,9 @@ class UIComponent extends Sprite
 		invalidateDisplayList();
 	}
 	
+	/**
+		 * Validate and update the properties and layout of this object and redraw it, if necessary.
+		 */
 	public function validate():Void
 	{
 		if( isCreating )
@@ -211,6 +236,9 @@ class UIComponent extends Sprite
 		}
 	}
 	
+	/**
+		 * Disposes the resources of all children.
+		 */
 	public function dispose():Void
 	{
 		this.removeEventListener(Event.ADDED, addedHandler);

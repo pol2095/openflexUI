@@ -6,10 +6,20 @@ accordance with the terms of the accompanying license agreement.
 */
 package openflexUI.layout;
 
+/**
+ * The HorizontalLayout class arranges the layout elements in a horizontal sequence, left to right, with optional gaps between the elements.
+ */
+
 class HorizontalLayout
 {
+	/**
+		 * The space, in pixels, between items..
+		 *
+		 * The default value is 0
+		 */
 	public var gap:Float = 0;
 	
+	@:dox(hide)
 	public function new()
 	{
 		//

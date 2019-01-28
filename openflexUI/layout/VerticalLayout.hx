@@ -6,10 +6,19 @@ accordance with the terms of the accompanying license agreement.
 */
 package openflexUI.layout;
 
+/**
+ * The VerticalLayout class arranges the layout elements in a vertical sequence, top to bottom, with optional gaps between the elements.
+ */
 class VerticalLayout
 {
+	/**
+		 * The space, in pixels, between items..
+		 *
+		 * The default value is 0
+		 */
 	public var gap:Float = 0;
 	
+	@:dox(hide)
 	public function new()
 	{
 		//
