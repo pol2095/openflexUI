@@ -49,6 +49,7 @@ class Scroller extends UIComponent
 	private var previousMove:Point;
 	private var previousGlobalMove:Point;
 	private var previousViewPort:Rectangle;
+	private var previousViewPortSB:Rectangle = new Rectangle();
 	/**
 		 * Swipe to scroll the viewport.
 		 *
@@ -302,11 +303,16 @@ class Scroller extends UIComponent
 		
 		if( horizontalScrollBarHeight != 0 && verticalScrollBarWidth != 0 )
 		{
-			viewPort.graphics.clear();
-			viewPort.graphics.beginFill(0x000000);
-			viewPort.graphics.drawRect(0, 0, this.width, this.height - scrollerSize);
-			viewPort.graphics.drawRect(0, this.height - scrollerSize, this.width - scrollerSize, scrollerSize);
-			viewPort.graphics.endFill();
+			var rectSB:Rectangle = new Rectangle( 0, 0, this.width, this.height - scrollerSize );
+			if( ! rectSB.equals( previousViewPortSB ) )
+			{
+				viewPort.graphics.clear();
+				viewPort.graphics.beginFill(0x000000);
+				viewPort.graphics.drawRect(0, 0, this.width, this.height - scrollerSize);
+				viewPort.graphics.drawRect(0, this.height - scrollerSize, this.width - scrollerSize, scrollerSize);
+				viewPort.graphics.endFill();
+				previousViewPortSB = rectSB.clone();
+			}
 		}
 		
 		if( horizontalScrollBarVisible )
