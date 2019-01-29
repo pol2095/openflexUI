@@ -34,7 +34,57 @@ class UIComponent extends Sprite
 		 */
 	public var includeInLayout:Bool = true;
 	private var isEnd:Bool;
-	private var previousBounds:Rectangle = new Rectangle();
+	private var previousContentSize:Rectangle = new Rectangle();
+	
+	private var X(get, never):Float;
+	
+	private function get_X()
+	{
+		return this.x;
+	}
+	
+	private var Y(get, never):Float;
+	
+	private function get_Y()
+	{
+		return this.y;
+	}
+	
+	private var pivotX(get, never):Float;
+	
+	private function get_pivotX()
+	{
+		var value:Float = 0;
+		return value;
+	}
+	
+	private var pivotY(get, never):Float;
+	
+	private function get_pivotY()
+	{
+		var value:Float = 0;
+		return value;
+	}
+	
+	/**
+		 * The width of the viewport's content.
+		 */
+	public var contentWidth(get, never):Float;
+	
+	private function get_contentWidth()
+	{
+		return this.height;
+	}
+	
+	/**
+		 * The height of the viewport's content.
+		 */
+	public var contentHeight(get, never):Float;
+	
+	private function get_contentHeight()
+	{
+		return this.height;
+	}
 	
 	@:dox(hide)
 	public function new()
@@ -112,7 +162,7 @@ class UIComponent extends Sprite
 	private function updateDisplayList(unscaledWidth:Float, unscaledHeight:Float):Void
 	{
 		//trace("UPDATELIST");
-		//trace(this.width, this.height);
+		//trace(this.name, this.width, this.height);
 		//trace( this.name );
 		for(i in 0...this.numChildren)
 		{
@@ -124,14 +174,18 @@ class UIComponent extends Sprite
 			{
 				if( i > 0 )
 				{
-					this.getChildAt(i).y = this.getChildAt(i-1).y + this.getChildAt(i-1).height + this.layout.gap;
+					var y:Float = Reflect.hasField( this.getChildAt(i-1), "isUIComponent" ) ? cast( this.getChildAt(i-1), UIComponent ).Y : this.getChildAt(i-1).y;
+					var pivotY:Float = Reflect.hasField( this.getChildAt(i), "isUIComponent" ) ? cast( this.getChildAt(i), UIComponent ).pivotY : 0;
+					this.getChildAt(i).y = y - pivotY + this.getChildAt(i-1).height + this.layout.gap;
 				}
 			}
 			else if( Std.is( this.layout, HorizontalLayout ) )
 			{
 				if( i > 0 )
 				{
-					this.getChildAt(i).x = this.getChildAt(i-1).x + this.getChildAt(i-1).width + this.layout.gap;
+					var x:Float = Reflect.hasField( this.getChildAt(i-1), "isUIComponent" ) ? cast( this.getChildAt(i-1), UIComponent ).X : this.getChildAt(i-1).x;
+					var pivotX:Float = Reflect.hasField( this.getChildAt(i), "isUIComponent" ) ? cast( this.getChildAt(i), UIComponent ).pivotX : 0;
+					this.getChildAt(i).x = x - pivotX + this.getChildAt(i-1).width + this.layout.gap;
 				}
 			}
 		}
@@ -150,7 +204,7 @@ class UIComponent extends Sprite
 		{
 			this.dispatchEvent( new Event( Event.RESIZE ) );
 		}
-		previousBounds = this.getBounds( this.parent );
+		previousContentSize = new Rectangle( 0, 0, this.contentWidth, this.contentHeight );
 		this.removeEventListener( FlexEvent.COMPONENT_COMPLETE, creationCompleteHandler );
 	}
 	
@@ -200,7 +254,8 @@ class UIComponent extends Sprite
 	
 	private function renderHandler(event:Event):Void
 	{
-		if( this.getBounds( this.parent ).equals( this.previousBounds ) ) return;
+		var contentSize:Rectangle = new Rectangle( 0, 0, this.contentWidth, this.contentHeight );
+		if( contentSize.equals( previousContentSize ) ) return;
 		//if( Std.is( event.target, UIComponent ) )
 		if( Reflect.hasField( event.target, "isUIComponent" ) )
 		{
