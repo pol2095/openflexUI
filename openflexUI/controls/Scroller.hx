@@ -112,28 +112,64 @@ class Scroller extends UIComponent
 		return _height = value;
 	}
 	
-	override private function get_X()
+	private var _x:Float = 0;
+	
+	override private function get_x()
 	{
-		var point:Point = this.localToGlobal( new Point( 0, this.viewPort.x ) );
-		return parent.globalToLocal( point ).x;
+		return _x;
 	}
 	
-	override private function get_Y()
+	override private function set_x(value:Float)
 	{
-		var point:Point = this.localToGlobal( new Point( 0, this.viewPort.y ) );
-		return parent.globalToLocal( point ).y;
+		_x = value;
+		return super.x = value - pivotX;
 	}
 	
-	override private function get_pivotX()
+	private var _y:Float = 0;
+	
+	override private function get_y()
 	{
-		var point:Point = this.localToGlobal( new Point( 0, this.viewPort.x ) );
-		return parent.globalToLocal( point ).x - this.x;
+		return _y;
 	}
 	
-	override private function get_pivotY()
+	override private function set_y(value:Float)
 	{
-		var point:Point = this.localToGlobal( new Point( 0, this.viewPort.y ) );
-		return parent.globalToLocal( point ).y - this.y;
+		_y = value;
+		return super.y = value - pivotY;
+	}
+	
+	private var _pivotX:Float = 0;
+	/**
+		 * The x coordinate of the object's origin in its own coordinate space (default: 0).
+		 */
+	public var pivotX(get, set):Float;
+	
+	private function get_pivotX()
+	{
+		return _pivotX;
+	}
+	
+	private function set_pivotX(value:Float)
+	{
+		_pivotX = value;
+		return this.x = this.x;
+	}
+	
+	private var _pivotY:Float = 0;
+	/**
+		 * The y coordinate of the object's origin in its own coordinate space (default: 0).
+		 */
+	public var pivotY(get, set):Float;
+	
+	private function get_pivotY()
+	{
+		return _pivotY;
+	}
+	
+	private function set_pivotY(value:Float)
+	{
+		_pivotY = value;
+		return this.y = this.y;
 	}
 	
 	/**
@@ -738,7 +774,8 @@ class Scroller extends UIComponent
 		var point:Point = this.localToGlobal( new Point(this.viewPort.x, 0) );
 		point = parent.globalToLocal( point );
 		
-		this.x -= point.subtract( previousViewPort ).x;
+		this.pivotX += point.subtract( previousViewPort ).x;
+		//this.x -= point.subtract( previousViewPort ).x;
 		horizontalScrollBar.x = this.viewPort.x;
 		verticalScrollBar.x = this.viewPort.x + width;
 	}
@@ -763,7 +800,8 @@ class Scroller extends UIComponent
 		var point:Point = this.localToGlobal( new Point(0, this.viewPort.y) );
 		point = parent.globalToLocal( point );
 		
-		this.y -= point.subtract( previousViewPort ).y;
+		this.pivotY += point.subtract( previousViewPort ).y;
+		//this.y -= point.subtract( previousViewPort ).y;
 		verticalScrollBar.y = this.viewPort.y;
 		horizontalScrollBar.y = this.viewPort.y + height;
 	}

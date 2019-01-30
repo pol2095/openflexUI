@@ -36,36 +36,6 @@ class UIComponent extends Sprite
 	private var isEnd:Bool;
 	private var previousContentSize:Rectangle = new Rectangle();
 	
-	private var X(get, never):Float;
-	
-	private function get_X()
-	{
-		return this.x;
-	}
-	
-	private var Y(get, never):Float;
-	
-	private function get_Y()
-	{
-		return this.y;
-	}
-	
-	private var pivotX(get, never):Float;
-	
-	private function get_pivotX()
-	{
-		var value:Float = 0;
-		return value;
-	}
-	
-	private var pivotY(get, never):Float;
-	
-	private function get_pivotY()
-	{
-		var value:Float = 0;
-		return value;
-	}
-	
 	/**
 		 * The width of the viewport's content.
 		 */
@@ -174,18 +144,14 @@ class UIComponent extends Sprite
 			{
 				if( i > 0 )
 				{
-					var y:Float = Reflect.hasField( this.getChildAt(i-1), "isUIComponent" ) ? cast( this.getChildAt(i-1), UIComponent ).Y : this.getChildAt(i-1).y;
-					var pivotY:Float = Reflect.hasField( this.getChildAt(i), "isUIComponent" ) ? cast( this.getChildAt(i), UIComponent ).pivotY : 0;
-					this.getChildAt(i).y = y - pivotY + this.getChildAt(i-1).height + this.layout.gap;
+					this.getChildAt(i).y = this.getChildAt(i-1).y + this.getChildAt(i-1).height + this.layout.gap;
 				}
 			}
 			else if( Std.is( this.layout, HorizontalLayout ) )
 			{
 				if( i > 0 )
 				{
-					var x:Float = Reflect.hasField( this.getChildAt(i-1), "isUIComponent" ) ? cast( this.getChildAt(i-1), UIComponent ).X : this.getChildAt(i-1).x;
-					var pivotX:Float = Reflect.hasField( this.getChildAt(i), "isUIComponent" ) ? cast( this.getChildAt(i), UIComponent ).pivotX : 0;
-					this.getChildAt(i).x = x - pivotX + this.getChildAt(i-1).width + this.layout.gap;
+					this.getChildAt(i).x = this.getChildAt(i-1).x + this.getChildAt(i-1).width + this.layout.gap;
 				}
 			}
 		}
