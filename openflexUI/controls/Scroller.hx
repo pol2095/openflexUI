@@ -7,6 +7,7 @@ accordance with the terms of the accompanying license agreement.
 package openflexUI.controls;
 
 import openfl.display.BlendMode;
+import openfl.display.DisplayObject;
 import openfl.display.Sprite;
 import openfl.events.Event;
 import openfl.events.MouseEvent;
@@ -87,10 +88,18 @@ class Scroller extends UIComponent
 	
 	private var _width:Float = Math.NaN;
 	
+	private var Width(get, never):Float;
+	
+	private function get_Width()
+	{
+		var contentWidth:Float = this.contentWidth;
+		if( Math.isNaN( _width ) || _width > contentWidth ) return contentWidth;
+		return _width;
+	}
+	
 	override private function get_width()
 	{
-		if( Math.isNaN( _width ) || _width > super.width ) return super.width;
-		return _width;
+		return viewPort.width;
 	}
 	
 	override private function set_width(value:Float)
@@ -101,10 +110,19 @@ class Scroller extends UIComponent
 	
 	private var _height:Float = Math.NaN;
 	
+	private var Height(get, never):Float;
+	
+	private function get_Height()
+	{
+		var contentHeight:Float = this.contentHeight;
+		if( Math.isNaN( _height ) || _height > contentHeight ) return contentHeight;
+		return _height;
+	}
+	
 	override private function get_height()
 	{
-		if( Math.isNaN( _height ) || _height > super.height ) return super.height;
-		return _height;
+		trace(viewPort.height);
+		return viewPort.height;
 	}
 	
 	override private function set_height(value:Float)
@@ -180,7 +198,7 @@ class Scroller extends UIComponent
 	
 	private function get_maxHorizontalScrollBarPosition()
 	{
-		var width:Float = this.width - verticalScrollBarWidth;
+		var width:Float = viewPort.width - verticalScrollBarWidth;
 		var contentWidth:Float = this.contentWidth;
 		/*var widthSB:Float = horizontalScrollBarCursor.width;
 		var contentWidthSB:Float = horizontalScrollBarRight.x - scrollerSize - gap * 2;
@@ -195,7 +213,7 @@ class Scroller extends UIComponent
 	
 	private function get_maxVerticalScrollBarPosition()
 	{
-		var height:Float = this.height - horizontalScrollBarHeight;
+		var height:Float = viewPort.height - horizontalScrollBarHeight;
 		var contentHeight:Float = this.contentHeight;
 		/*var heightSB:Float = verticalScrollBarCursor.height;
 		var contentHeightSB:Float = verticalScrollBarDown.y - scrollerSize - gap * 2;
@@ -257,34 +275,76 @@ class Scroller extends UIComponent
 	
 	override private function get_contentWidth()
 	{
-		if( verticalScrollBar.visible )
+		var width:Float = 0;
+		var childrens:Array<DisplayObject> = [];
+		var childrenPosition:Array<Int> = [];
+		var i:Int = this.numChildren - 1;
+		while(i >= 0)
 		{
-			verticalScrollBar.scaleX = 0;
-			this.viewPort.scaleX = 0;
+			if( Reflect.hasField( this.getChildAt(i), "isUIComponent" ) )
+			{
+				if( ! cast( this.getChildAt(i), UIComponent ).includeInLayout )
+				{
+					childrens.push( this.getChildAt(i) );
+					childrenPosition.push( this.getChildIndex( this.getChildAt(i) ) );
+					this.removeChild( this.getChildAt(i) );
+				}
+			}
+			if( Reflect.hasField( this.getChildAt(i), "noLayout" ) )
+			{
+				childrens.push( this.getChildAt(i) );
+				childrenPosition.push( this.getChildIndex( this.getChildAt(i) ) );
+				this.removeChild( this.getChildAt(i) );
+			}
+			i--;
 		}
-		var contentWidth:Float = super.width;
-		if( verticalScrollBar.visible )
+		childrens.reverse();
+		childrenPosition.reverse();
+		
+		width = super.width;
+		
+		for(i in 0...childrens.length)
 		{
-			verticalScrollBar.scaleX = 1;
-			this.viewPort.scaleX = 1;
+			this.addChildAt( childrens[i], childrenPosition[i] );
 		}
-		return contentWidth;
+		return width;
 	}
 	
 	override private function get_contentHeight()
 	{
-		if( horizontalScrollBar.visible )
+		var height:Float = 0;
+		var childrens:Array<DisplayObject> = [];
+		var childrenPosition:Array<Int> = [];
+		var i:Int = this.numChildren - 1;
+		while(i >= 0)
 		{
-			horizontalScrollBar.scaleY = 0;
-			this.viewPort.scaleY = 0;
+			if( Reflect.hasField( this.getChildAt(i), "isUIComponent" ) )
+			{
+				if( ! cast( this.getChildAt(i), UIComponent ).includeInLayout )
+				{
+					childrens.push( this.getChildAt(i) );
+					childrenPosition.push( this.getChildIndex( this.getChildAt(i) ) );
+					this.removeChild( this.getChildAt(i) );
+				}
+			}
+			if( Reflect.hasField( this.getChildAt(i), "noLayout" ) )
+			{
+				childrens.push( this.getChildAt(i) );
+				childrenPosition.push( this.getChildIndex( this.getChildAt(i) ) );
+				this.removeChild( this.getChildAt(i) );
+			}
+			i--;
 		}
-		var contentHeight:Float = super.height;
-		if( horizontalScrollBar.visible )
+		childrens.reverse();
+		childrenPosition.reverse();
+		
+		height = super.height;
+		
+		for(i in 0...childrens.length)
 		{
-			horizontalScrollBar.scaleY = 1;
-			this.viewPort.scaleY = 1;
+			this.addChildAt( childrens[i], childrenPosition[i] );
 		}
-		return contentHeight;
+		return height;
 	}
 	
 	private var horizontalScrollBarHeight(get, never):Float;
@@ -311,6 +371,7 @@ class Scroller extends UIComponent
 		viewPort.graphics.beginFill(0x000000);
         viewPort.graphics.drawRect(0, 0, 0, 0);
         viewPort.graphics.endFill();
+		Reflect.setProperty(viewPort, "noLayout", true);
 		this.addChild( viewPort );
 		previousViewPort = new Rectangle();
 		this.mask = viewPort;
@@ -338,19 +399,21 @@ class Scroller extends UIComponent
 		
 		if( horizontalScrollBar == null ) createHorizontalScrollBar();
 		if( verticalScrollBar == null ) createVerticalScrollBar();
-		horizontalScrollBar.scaleY = 0;
-		verticalScrollBar.scaleX = 0;
 		
 		//trace("CREATE VIEWPORT");
 		//trace( this.width, this.height );
+		var width:Float = this.Width;
+		var height:Float = this.Height;
+		var contentWidth:Float = this.contentWidth;
+		var contentHeight:Float = this.contentHeight;
 		var isChange:Bool = false;
-		var rect:Rectangle = new Rectangle( 0, 0, this.width, this.height );
-		var rectContent:Rectangle = new Rectangle( 0, 0, this.contentWidth, this.contentHeight );
+		var rect:Rectangle = new Rectangle( 0, 0, width, height );
+		var rectContent:Rectangle = new Rectangle( 0, 0, contentWidth, contentHeight );
 		if( ! rect.equals( previousViewPort ) || ! rectContent.equals( previousContent ) )
 		{
 			viewPort.graphics.clear();
 			viewPort.graphics.beginFill(0x000000);
-			viewPort.graphics.drawRect(0, 0, this.width, this.height);
+			viewPort.graphics.drawRect(0, 0, width, height);
 			viewPort.graphics.endFill();
 			isChange = true;
 			previousViewPort = rect.clone();
@@ -360,52 +423,37 @@ class Scroller extends UIComponent
 		/*viewPort.width = this.width;
 		viewPort.height = this.height;*/
 		
-		if( Math.isNaN( width ) || width == super.width || horizontalScrollPolicy == "off" )
+		if( Math.isNaN( width ) || width == contentWidth || horizontalScrollPolicy == "off" )
 		{
 			horizontalScrollBar.visible = false;
-			//horizontalScrollBar.scaleY = 0;
 		}
 		else
 		{
 			horizontalScrollBar.visible = true;
-			//horizontalScrollBar.scaleY = 1;
 		}
 		
-		if( Math.isNaN( height ) || height == super.height || verticalScrollPolicy == "off" )
+		if( Math.isNaN( height ) || height == contentHeight || verticalScrollPolicy == "off" )
 		{
 			verticalScrollBar.visible = false;
-			//verticalScrollBar.scaleX = 0;
 		}
 		else
 		{
 			verticalScrollBar.visible = true;
-			//verticalScrollBar.scaleX = 1;
 		}
 		
-		var _width:Float = width;
-		var superWidth:Float = super.width;
-		var _height:Float = height;
-		var superHeight:Float = super.height;
-		
-		horizontalScrollBar.scaleY = 1;
-		verticalScrollBar.scaleX = 1;
-		
-		horizontalScrollBar.y = this.viewPort.y + _height - horizontalScrollBarHeight;
+		horizontalScrollBar.y = viewPort.y + viewPort.height - horizontalScrollBarHeight;
 		horizontalScrollBarBG.width = viewPort.width - verticalScrollBarWidth;
 		horizontalScrollBarCursor.x = scrollerSize + gap;
 		horizontalScrollBarCursor.width = viewPort.width - verticalScrollBarWidth - scrollerSize * 2 - gap * 2;
-		horizontalScrollBarCursor.width *= _width / superWidth;
+		horizontalScrollBarCursor.width *= viewPort.width / contentWidth;
 		horizontalScrollBarRight.x = viewPort.width - verticalScrollBarWidth - scrollerSize;
 		
-		verticalScrollBar.x = this.viewPort.x + _width - verticalScrollBarWidth;
+		verticalScrollBar.x = viewPort.x + viewPort.width - verticalScrollBarWidth;
 		verticalScrollBarBG.height = viewPort.height - horizontalScrollBarHeight;
 		verticalScrollBarCursor.y = scrollerSize + gap;
 		verticalScrollBarCursor.height = viewPort.height - horizontalScrollBarHeight - scrollerSize * 2 - gap * 2;
-		verticalScrollBarCursor.height *= _height / superHeight;
+		verticalScrollBarCursor.height *= viewPort.height / contentHeight;
 		verticalScrollBarDown.y = viewPort.height - horizontalScrollBarHeight - scrollerSize;
-		
-		if( ! horizontalScrollBar.visible ) horizontalScrollBar.scaleY = 0;
-		if( ! verticalScrollBar.visible ) verticalScrollBar.scaleX = 0;
 		
 		if( isChange )
 		{
@@ -413,17 +461,17 @@ class Scroller extends UIComponent
 			{
 				viewPort.graphics.clear();
 				viewPort.graphics.beginFill(0x000000);
-				viewPort.graphics.drawRect(0, 0, this.width, this.height - scrollerSize);
-				viewPort.graphics.drawRect(0, this.height - scrollerSize, this.width - scrollerSize, scrollerSize);
+				viewPort.graphics.drawRect(0, 0, width, height - scrollerSize);
+				viewPort.graphics.drawRect(0, height - scrollerSize, width - scrollerSize, scrollerSize);
 				viewPort.graphics.endFill();
 			}
 			else if( ( horizontalScrollBar.visible && ! verticalScrollBar.visible ) || ( ! horizontalScrollBar.visible && verticalScrollBar.visible ) )
 			{
-				if( horizontalScrollBar.visible ) horizontalScrollBar.y = this.viewPort.y + height;
-				if( verticalScrollBar.visible ) horizontalScrollBar.y = this.viewPort.x + width;
+				if( horizontalScrollBar.visible ) horizontalScrollBar.y = viewPort.y + viewPort.height;
+				if( verticalScrollBar.visible ) verticalScrollBar.x = viewPort.x + viewPort.width;
 				viewPort.graphics.clear();
 				viewPort.graphics.beginFill(0x000000);
-				viewPort.graphics.drawRect(0, 0, this.width, this.height);
+				viewPort.graphics.drawRect(0, 0, width + verticalScrollBarWidth, height + horizontalScrollBarHeight);
 				viewPort.graphics.endFill();
 			}
 		}
@@ -448,6 +496,7 @@ class Scroller extends UIComponent
 	private function createHorizontalScrollBar():Void
 	{
 		horizontalScrollBar = new Sprite();
+		Reflect.setProperty(horizontalScrollBar, "noLayout", true);
 		this.addChild( horizontalScrollBar );
 		
 		horizontalScrollBarBG.graphics.beginFill(0xCCCCCC);
@@ -490,6 +539,7 @@ class Scroller extends UIComponent
 	private function createVerticalScrollBar():Void
 	{
 		verticalScrollBar = new Sprite();
+		Reflect.setProperty(verticalScrollBar, "noLayout", true);
 		this.addChild( verticalScrollBar );
 		
 		verticalScrollBarBG.graphics.beginFill(0xCCCCCC);
@@ -545,7 +595,7 @@ class Scroller extends UIComponent
 	
 	private function horizontalScrollBarLeftClickHandler(event:MouseEvent):Void
 	{
-		var width:Float = this.width - verticalScrollBarWidth;
+		var width:Float = viewPort.width - verticalScrollBarWidth;
 		var contentWidth:Float = this.contentWidth;
 		var widthSB:Float = horizontalScrollBarCursor.width;
 		var contentWidthSB:Float = horizontalScrollBarRight.x - scrollerSize - gap * 2;
@@ -571,12 +621,12 @@ class Scroller extends UIComponent
 	
 	private function horizontalScrollBarRightClickHandler(event:MouseEvent):Void
 	{
-		var width:Float = this.width - verticalScrollBarWidth;
+		var width:Float = viewPort.width - verticalScrollBarWidth;
 		var contentWidth:Float = this.contentWidth;
 		var widthSB:Float = horizontalScrollBarCursor.width;
 		var contentWidthSB:Float = horizontalScrollBarRight.x - scrollerSize - gap * 2;
 		
-		horizontalScrollBarCursor.x += 5 * ( contentWidthSB - widthSB ) / ( contentWidth - width );
+		horizontalScrollBarCursor.x += 5 * ( contentWidthSB - widthSB ) / ( contentWidth - viewPort.width );
 		
 		positioningX( width, contentWidth, widthSB, contentWidthSB );
 	}
@@ -597,7 +647,7 @@ class Scroller extends UIComponent
 	
 	private function verticalScrollBarUpClickHandler(event:MouseEvent):Void
 	{
-		var height:Float = this.height - horizontalScrollBarHeight;
+		var height:Float = viewPort.height - horizontalScrollBarHeight;
 		var contentHeight:Float = this.contentHeight;
 		var heightSB:Float = verticalScrollBarCursor.height;
 		var contentHeightSB:Float = verticalScrollBarDown.y - scrollerSize - gap * 2;
@@ -623,7 +673,7 @@ class Scroller extends UIComponent
 	
 	private function verticalScrollBarDownClickHandler(event:MouseEvent):Void
 	{
-		var height:Float = this.height - horizontalScrollBarHeight;
+		var height:Float = viewPort.height - horizontalScrollBarHeight;
 		var contentHeight:Float = this.contentHeight;
 		var heightSB:Float = verticalScrollBarCursor.height;
 		var contentHeightSB:Float = verticalScrollBarDown.y - scrollerSize - gap * 2;
@@ -659,7 +709,7 @@ class Scroller extends UIComponent
 	
 	private function horizontalScrollBarCursorClickHandler():Void
 	{
-		var width:Float = this.width - verticalScrollBarWidth;
+		var width:Float = viewPort.width - verticalScrollBarWidth;
 		var contentWidth:Float = this.contentWidth;
 		var widthSB:Float = horizontalScrollBarCursor.width;
 		var contentWidthSB:Float = horizontalScrollBarRight.x - scrollerSize - gap * 2;
@@ -691,7 +741,7 @@ class Scroller extends UIComponent
 	
 	private function verticalScrollBarCursorClickHandler():Void
 	{
-		var height:Float = this.height - horizontalScrollBarHeight;
+		var height:Float = viewPort.height - horizontalScrollBarHeight;
 		var contentHeight:Float = this.contentHeight;
 		var heightSB:Float = verticalScrollBarCursor.height;
 		var contentHeightSB:Float = verticalScrollBarDown.y - scrollerSize - gap * 2;
@@ -702,9 +752,9 @@ class Scroller extends UIComponent
 	private function swipeMouseDownHandler(event:MouseEvent):Void
 	{
 		if( ! swipe ) return;
-		var width:Float = this.width - verticalScrollBarWidth;
-		var height:Float = this.height - horizontalScrollBarHeight;
-		var point:Point = this.localToGlobal( new Point( this.viewPort.x, this.viewPort.y ) );
+		var width:Float = viewPort.width - verticalScrollBarWidth;
+		var height:Float = viewPort.height - horizontalScrollBarHeight;
+		var point:Point = this.localToGlobal( new Point( viewPort.x, viewPort.y ) );
 		var rect:Rectangle = new Rectangle( point.x, point.y, width, height );
 		previousGlobalMove = new Point( stage.mouseX, stage.mouseY );
 		startMove = previousGlobalMove.clone();
@@ -715,17 +765,17 @@ class Scroller extends UIComponent
 	
 	private function swipeMouseMoveHandler(event:MouseEvent):Void
 	{
-		var width:Float = this.width - verticalScrollBarWidth;
+		var width:Float = viewPort.width - verticalScrollBarWidth;
 		var contentWidth:Float = this.contentWidth;
 		var widthSB:Float = horizontalScrollBarCursor.width;
 		var contentWidthSB:Float = horizontalScrollBarRight.x - scrollerSize - gap * 2;
 		
-		var height:Float = this.height - horizontalScrollBarHeight;
+		var height:Float = viewPort.height - horizontalScrollBarHeight;
 		var contentHeight:Float = this.contentHeight;
 		var heightSB:Float = verticalScrollBarCursor.height;
 		var contentHeightSB:Float = verticalScrollBarDown.y - scrollerSize - gap * 2;
 		
-		var point:Point = this.localToGlobal( new Point( this.viewPort.x, this.viewPort.y ) );
+		var point:Point = this.localToGlobal( new Point( viewPort.x, viewPort.y ) );
 		var rect:Rectangle = new Rectangle( point.x, point.y, width, height );
 		var global:Point = new Point( stage.mouseX, stage.mouseY );
 		if( ! rect.containsPoint( global ) ) return;
@@ -808,17 +858,17 @@ class Scroller extends UIComponent
 		
 		var x:Float = horizontalScrollBarCursor.x - scrollerSize - gap;
 		
-		var previousViewPort:Point = this.localToGlobal( new Point(this.viewPort.x, 0) );
+		var previousViewPort:Point = this.localToGlobal( new Point(viewPort.x, 0) );
 		previousViewPort = parent.globalToLocal( previousViewPort );
 		
-		this.viewPort.x = x * ( contentWidth - width ) / ( contentWidthSB - widthSB );
-		var point:Point = this.localToGlobal( new Point(this.viewPort.x, 0) );
+		viewPort.x = x * ( contentWidth - width ) / ( contentWidthSB - widthSB );
+		var point:Point = this.localToGlobal( new Point(viewPort.x, 0) );
 		point = parent.globalToLocal( point );
 		
 		this.pivotX += point.subtract( previousViewPort ).x;
 		//this.x -= point.subtract( previousViewPort ).x;
-		horizontalScrollBar.x = this.viewPort.x;
-		verticalScrollBar.x = this.viewPort.x + width;
+		horizontalScrollBar.x = viewPort.x;
+		verticalScrollBar.x = viewPort.x + width;
 	}
 	
 	private function positioningY(height:Float, contentHeight:Float, heightSB:Float, contentHeightSB:Float):Void
@@ -834,17 +884,17 @@ class Scroller extends UIComponent
 		
 		var y:Float = verticalScrollBarCursor.y - scrollerSize - gap;
 		
-		var previousViewPort:Point = this.localToGlobal( new Point(0, this.viewPort.y) );
+		var previousViewPort:Point = this.localToGlobal( new Point(0, viewPort.y) );
 		previousViewPort = parent.globalToLocal( previousViewPort );
 		
-		this.viewPort.y = y * ( contentHeight - height ) / ( contentHeightSB - heightSB );
-		var point:Point = this.localToGlobal( new Point(0, this.viewPort.y) );
+		viewPort.y = y * ( contentHeight - height ) / ( contentHeightSB - heightSB );
+		var point:Point = this.localToGlobal( new Point(0, viewPort.y) );
 		point = parent.globalToLocal( point );
 		
 		this.pivotY += point.subtract( previousViewPort ).y;
 		//this.y -= point.subtract( previousViewPort ).y;
-		verticalScrollBar.y = this.viewPort.y;
-		horizontalScrollBar.y = this.viewPort.y + height;
+		verticalScrollBar.y = viewPort.y;
+		horizontalScrollBar.y = viewPort.y + height;
 	}
 	
 	@:dox(hide)

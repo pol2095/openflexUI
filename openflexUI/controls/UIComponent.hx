@@ -6,13 +6,14 @@ accordance with the terms of the accompanying license agreement.
 */
 package openflexUI.controls;
 
+import openfl.display.DisplayObject;
 import openfl.display.DisplayObjectContainer;
 import openfl.display.Sprite;
 import openfl.events.Event;
 import openfl.geom.Rectangle;
 import openflexUI.events.FlexEvent;
-import openflexUI.layout.HorizontalLayout;
-import openflexUI.layout.VerticalLayout;
+import openflexUI.layouts.HorizontalLayout;
+import openflexUI.layouts.VerticalLayout;
 
 /**
  * The UIComponent class is the base class for all visual components, both interactive and noninteractive.
@@ -24,10 +25,24 @@ class UIComponent extends Sprite
 		 * Determines if the component has been initialized and validated for the first time.
 		 */
 	public var isCreated:Bool;
+	
+	private var _layout:Dynamic;
 	/**
 		 * Controls the way that the group's children are positioned and sized.
 		 */
-	public var layout:Dynamic;
+	public var layout(get, set):Dynamic;
+	
+	private function get_layout()
+	{
+		return _layout;
+	}
+	
+	private function set_layout(value:Dynamic)
+	{
+		createChildren();
+		return _layout = value;
+	}
+	
 	//public var isUIComponent:Bool = true;
 	
 	private var _includeInLayout:Bool = true;
@@ -57,7 +72,33 @@ class UIComponent extends Sprite
 	
 	private function get_contentWidth()
 	{
-		return this.height;
+		var width:Float = 0;
+		var childrens:Array<DisplayObject> = [];
+		var childrenPosition:Array<Int> = [];
+		var i:Int = this.numChildren - 1;
+		while(i >= 0)
+		{
+			if( Reflect.hasField( this.getChildAt(i), "isUIComponent" ) )
+			{
+				if( ! cast( this.getChildAt(i), UIComponent ).includeInLayout )
+				{
+					childrens.push( this.getChildAt(i) );
+					childrenPosition.push( this.getChildIndex( this.getChildAt(i) ) );
+					this.removeChild( this.getChildAt(i) );
+				}
+			}
+			i--;
+		}
+		childrens.reverse();
+		childrenPosition.reverse();
+		
+		width = super.width;
+		
+		for(i in 0...childrens.length)
+		{
+			this.addChildAt( childrens[i], childrenPosition[i] );
+		}
+		return width;
 	}
 	
 	/**
@@ -67,7 +108,33 @@ class UIComponent extends Sprite
 	
 	private function get_contentHeight()
 	{
-		return this.height;
+		var height:Float = 0;
+		var childrens:Array<DisplayObject> = [];
+		var childrenPosition:Array<Int> = [];
+		var i:Int = this.numChildren - 1;
+		while(i >= 0)
+		{
+			if( Reflect.hasField( this.getChildAt(i), "isUIComponent" ) )
+			{
+				if( ! cast( this.getChildAt(i), UIComponent ).includeInLayout )
+				{
+					childrens.push( this.getChildAt(i) );
+					childrenPosition.push( this.getChildIndex( this.getChildAt(i) ) );
+					this.removeChild( this.getChildAt(i) );
+				}
+			}
+			i--;
+		}
+		childrens.reverse();
+		childrenPosition.reverse();
+		
+		height = super.height;
+		
+		for(i in 0...childrens.length)
+		{
+			this.addChildAt( childrens[i], childrenPosition[i] );
+		}
+		return height;
 	}
 	
 	@:dox(hide)
@@ -148,8 +215,10 @@ class UIComponent extends Sprite
 	{
 		//trace("UPDATELIST");
 		//trace(this.name, this.width, this.height);
-		//trace( this.name );
+		var _width:Float = 0;
+		var _height:Float = 0;
 		var previous:Int = 0;
+		
 		for(i in 0...this.numChildren)
 		{
 			if( Reflect.hasField( this.getChildAt(i), "isUIComponent" ) )
@@ -162,18 +231,51 @@ class UIComponent extends Sprite
 			}
 			if( Std.is( this.layout, VerticalLayout ) )
 			{
-				if( i > 0 )
+				this.getChildAt(i).y = i == 0 ? 0 : this.getChildAt(previous).y + this.getChildAt(previous).height + this.layout.gap;
+				previous = i;
+				if( this.getChildAt(i).width > _width ) _width = this.getChildAt(i).width;
+			}
+			else if( Std.is( this.layout, HorizontalLayout ) )
+			{
+				this.getChildAt(i).x = i == 0 ? 0 : this.getChildAt(previous).x + this.getChildAt(previous).width + this.layout.gap;
+				previous = i;
+				if( this.getChildAt(i).height > _height ) _height = this.getChildAt(i).height;
+			}
+		}
+		for(i in 0...this.numChildren)
+		{
+			if( Reflect.hasField( this.getChildAt(i), "isUIComponent" ) )
+			{
+				if( ! cast( this.getChildAt(i), UIComponent ).includeInLayout )	continue;
+			}
+			if( Std.is( this.layout, VerticalLayout ) )
+			{
+				if( this.layout.horizontalAlign == "left" )
 				{
-					this.getChildAt(i).y = this.getChildAt(previous).y + this.getChildAt(previous).height + this.layout.gap;
-					previous = i;
+					this.getChildAt(i).x = 0;
+				}
+				else if( this.layout.horizontalAlign == "center" )
+				{
+					this.getChildAt(i).x = ( _width - this.getChildAt(i).width ) / 2;
+				}
+				else if( this.layout.horizontalAlign == "top" )
+				{
+					this.getChildAt(i).x = _width - this.getChildAt(i).width;
 				}
 			}
 			else if( Std.is( this.layout, HorizontalLayout ) )
 			{
-				if( i > 0 )
+				if( this.layout.verticalAlign == "top" )
 				{
-					this.getChildAt(i).x = this.getChildAt(previous).x + this.getChildAt(previous).width + this.layout.gap;
-					previous = i;
+					this.getChildAt(i).y = 0;
+				}
+				else if( this.layout.verticalAlign == "middle" )
+				{
+					this.getChildAt(i).y = ( _height - this.getChildAt(i).height ) / 2;
+				}
+				else if( this.layout.verticalAlign == "top" )
+				{
+					this.getChildAt(i).y = _height - this.getChildAt(i).height;
 				}
 			}
 		}
@@ -224,8 +326,10 @@ class UIComponent extends Sprite
 		//if( Std.is( event.target, UIComponent ) )
 		if( Reflect.hasField( event.target, "isUIComponent" ) )
 		{
+			if( ! cast( event.target, UIComponent ).includeInLayout ) return;
 			cast( event.target, UIComponent ).addEventListener( FlexEvent.COMPONENT_COMPLETE, creationCompleteHandler );
 		}
+		if( Reflect.hasField( event.target, "noLayout" ) ) return;
 		createChildren();
 	}
 	
@@ -235,8 +339,10 @@ class UIComponent extends Sprite
 		//if( Std.is( event.target, UIComponent ) )
 		if( Reflect.hasField( event.target, "isUIComponent" ) )
 		{
+			if( ! cast( event.target, UIComponent ).includeInLayout ) return;
 			cast( event.target, UIComponent ).removeEventListener( FlexEvent.COMPONENT_COMPLETE, creationCompleteHandler );
 		}
+		if( Reflect.hasField( event.target, "noLayout" ) ) return;
 		createChildren();
 	}
 	
