@@ -29,10 +29,24 @@ class UIComponent extends Sprite
 		 */
 	public var layout:Dynamic;
 	//public var isUIComponent:Bool = true;
+	
+	private var _includeInLayout:Bool = true;
 	/**
 		 * Determines if the layout should use this object or ignore it.
 		 */
-	public var includeInLayout:Bool = true;
+	public var includeInLayout(get, set):Bool;
+	
+	private function get_includeInLayout()
+	{
+		return _includeInLayout;
+	}
+	
+	private function set_includeInLayout(value:Bool)
+	{
+		createChildren();
+		return _includeInLayout = value;
+	}
+	
 	private var isEnd:Bool;
 	private var previousContentSize:Rectangle = new Rectangle();
 	
@@ -66,6 +80,7 @@ class UIComponent extends Sprite
 		this.addEventListener(Event.ADDED, addedHandler);
 		this.addEventListener(Event.REMOVED, removedHandler);
 		this.addEventListener(Event.RENDER, renderHandler);
+		this.addEventListener(FlexEvent.VALUE_COMMIT, valueCommitHandler);
 	}
 	
 	private function style():Void
@@ -134,24 +149,31 @@ class UIComponent extends Sprite
 		//trace("UPDATELIST");
 		//trace(this.name, this.width, this.height);
 		//trace( this.name );
+		var previous:Int = 0;
 		for(i in 0...this.numChildren)
 		{
 			if( Reflect.hasField( this.getChildAt(i), "isUIComponent" ) )
 			{
-				if( ! cast( this.getChildAt(i), UIComponent ).includeInLayout ) continue;
+				if( ! cast( this.getChildAt(i), UIComponent ).includeInLayout )
+				{
+					cast( this.getChildAt(i), UIComponent ).x = cast( this.getChildAt(i), UIComponent ).y = 0;
+					continue;
+				}
 			}
 			if( Std.is( this.layout, VerticalLayout ) )
 			{
 				if( i > 0 )
 				{
-					this.getChildAt(i).y = this.getChildAt(i-1).y + this.getChildAt(i-1).height + this.layout.gap;
+					this.getChildAt(i).y = this.getChildAt(previous).y + this.getChildAt(previous).height + this.layout.gap;
+					previous = i;
 				}
 			}
 			else if( Std.is( this.layout, HorizontalLayout ) )
 			{
 				if( i > 0 )
 				{
-					this.getChildAt(i).x = this.getChildAt(i-1).x + this.getChildAt(i-1).width + this.layout.gap;
+					this.getChildAt(i).x = this.getChildAt(previous).x + this.getChildAt(previous).width + this.layout.gap;
+					previous = i;
 				}
 			}
 		}
@@ -239,6 +261,11 @@ class UIComponent extends Sprite
 		invalidateDisplayList();
 	}
 	
+	private function valueCommitHandler(event:FlexEvent):Void
+	{
+		createChildren();
+	}
+	
 	/**
 		 * Validate and update the properties and layout of this object and redraw it, if necessary.
 		 */
@@ -265,5 +292,6 @@ class UIComponent extends Sprite
 		this.removeEventListener(Event.ADDED, addedHandler);
 		this.removeEventListener(Event.REMOVED, removedHandler);
 		this.removeEventListener(Event.RENDER, renderHandler);
+		this.removeEventListener(FlexEvent.VALUE_COMMIT, valueCommitHandler);
 	}
 }

@@ -13,6 +13,12 @@ import openfl.events.Event;
  */
 class FlexEvent extends Event
 {
+	@:dox(hide)
+	public static var COMPONENT_COMPLETE:String = "componentComplete";
+	/**
+		 * The FlexEvent.CREATION_COMPLETE constant defines the value of the type property of the event object for a creationComplete event.
+		 */
+	public static var CREATION_COMPLETE:String = "creationComplete";
 	/**
 		 * The FlexEvent.INITIALIZE constant defines the value of the type property of the event object for a initialize event.
 		 */
@@ -21,12 +27,10 @@ class FlexEvent extends Event
 		 * The FlexEvent.PREINITIALIZE constant defines the value of the type property of the event object for a preinitialize event.
 		 */
 	public static var PREINITIALIZE:String = "preinitialize";
-	@:dox(hide)
-	public static var COMPONENT_COMPLETE:String = "componentComplete";
 	/**
-		 * The FlexEvent.CREATION_COMPLETE constant defines the value of the type property of the event object for a creationComplete event.
+		 * The FlexEvent.VALUE_COMMIT constant defines the value of the type property of the event object for a valueCommit event.
 		 */
-	public static var CREATION_COMPLETE:String = "creationComplete";
+	public static var VALUE_COMMIT:String = "valueCommit";
 	
 	@:dox(hide)
 	public function new(type:String, bubbles:Bool = false, cancelable:Bool = false)

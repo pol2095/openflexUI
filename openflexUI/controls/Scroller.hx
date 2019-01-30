@@ -58,6 +58,7 @@ class Scroller extends UIComponent
 		createChildren();
 		return _verticalScrollPolicy = value;
 	}
+	
 	private var horizontalScrollBar:Sprite;
 	private var horizontalScrollBarBG:Sprite = new Sprite();
 	private var horizontalScrollBarLeft:Sprite = new Sprite();
