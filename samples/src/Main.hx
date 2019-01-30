@@ -13,8 +13,8 @@ import openfl.text.TextField;
 import openflexUI.controls.Scroller;
 import openflexUI.controls.UIComponent;
 import openflexUI.events.FlexEvent;
-import openflexUI.layout.HorizontalLayout;
-import openflexUI.layout.VerticalLayout;
+import openflexUI.layouts.HorizontalLayout;
+import openflexUI.layouts.VerticalLayout;
 
 class Main extends Sprite
 {
