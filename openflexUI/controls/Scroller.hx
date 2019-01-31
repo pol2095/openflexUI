@@ -121,7 +121,6 @@ class Scroller extends UIComponent
 	
 	override private function get_height()
 	{
-		trace(viewPort.height);
 		return viewPort.height;
 	}
 	
