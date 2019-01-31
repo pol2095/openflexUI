@@ -237,10 +237,12 @@ class Scroller extends UIComponent
 	
 	private function set_horizontalScrollBarPosition(x:Float)
 	{
+		if( ! horizontalScrollBar.visible ) return null;
 		var contentWidth:Float = this.contentWidth;
 		var contentWidthSB:Float = horizontalScrollBarRight.x - scrollerSize - gap * 2;
 		x *= contentWidthSB / contentWidth;
 		if( x < 0 ) x = 0;
+		trace( x, maxHorizontalScrollBarPosition );
 		if( x > maxHorizontalScrollBarPosition ) x = maxHorizontalScrollBarPosition;
 		horizontalScrollBarCursor.x = scrollerSize + gap + x;
 		horizontalScrollBarCursorClickHandler();
@@ -263,6 +265,7 @@ class Scroller extends UIComponent
 	
 	private function set_verticalScrollBarPosition(y:Float)
 	{
+		if( ! verticalScrollBar.visible ) return null;
 		var contentHeight:Float = this.contentHeight;
 		var contentHeightSB:Float = verticalScrollBarDown.y - scrollerSize - gap * 2;
 		y *= contentHeightSB / contentHeight;
