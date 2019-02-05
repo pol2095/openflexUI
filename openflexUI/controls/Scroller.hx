@@ -93,14 +93,14 @@ class Scroller extends UIComponent
 	private function get_Width()
 	{
 		var contentWidth:Float = this.contentWidth;
-		if( Math.isNaN( _width ) || _width > contentWidth ) return contentWidth;
+		if( Math.isNaN( _width ) || _width > contentWidth ) return getWidth( true );
 		return _width;
 	}
 	
-	override private function get_width()
+	/*override private function get_width()
 	{
 		return viewPort.width;
-	}
+	}*/
 	
 	override private function set_width(value:Float)
 	{
@@ -115,14 +115,14 @@ class Scroller extends UIComponent
 	private function get_Height()
 	{
 		var contentHeight:Float = this.contentHeight;
-		if( Math.isNaN( _height ) || _height > contentHeight ) return contentHeight;
+		if( Math.isNaN( _height ) || _height > contentHeight ) return getHeight( true );
 		return _height;
 	}
 	
-	override private function get_height()
+	/*override private function get_height()
 	{
 		return viewPort.height;
-	}
+	}*/
 	
 	override private function set_height(value:Float)
 	{
@@ -241,7 +241,6 @@ class Scroller extends UIComponent
 		var contentWidthSB:Float = horizontalScrollBarRight.x - scrollerSize - gap * 2;
 		x *= contentWidthSB / contentWidth;
 		if( x < 0 ) x = 0;
-		trace( x, maxHorizontalScrollBarPosition );
 		if( x > maxHorizontalScrollBarPosition ) x = maxHorizontalScrollBarPosition;
 		horizontalScrollBarCursor.x = scrollerSize + gap + x;
 		horizontalScrollBarCursorClickHandler();
@@ -275,7 +274,7 @@ class Scroller extends UIComponent
 		return null;
 	}
 	
-	override private function get_contentWidth()
+	override private function getWidth(content:Bool):Float
 	{
 		var width:Float = 0;
 		var childrens:Array<DisplayObject> = [];
@@ -303,7 +302,8 @@ class Scroller extends UIComponent
 		childrens.reverse();
 		childrenPosition.reverse();
 		
-		width = super.width;
+		//width = super.width;
+		width = measureSize( this, content ).width;
 		
 		for(i in 0...childrens.length)
 		{
@@ -312,7 +312,7 @@ class Scroller extends UIComponent
 		return width;
 	}
 	
-	override private function get_contentHeight()
+	override private function getHeight(content:Bool):Float
 	{
 		var height:Float = 0;
 		var childrens:Array<DisplayObject> = [];
@@ -340,7 +340,8 @@ class Scroller extends UIComponent
 		childrens.reverse();
 		childrenPosition.reverse();
 		
-		height = super.height;
+		//height = super.height;
+		height = measureSize( this, content ).height;
 		
 		for(i in 0...childrens.length)
 		{
@@ -369,7 +370,7 @@ class Scroller extends UIComponent
 	public function new()
 	{
 		super();
-		this.visible = false;
+		//this.visible = false;
 		viewPort.graphics.beginFill(0x000000);
         viewPort.graphics.drawRect(0, 0, 0, 0);
         viewPort.graphics.endFill();
@@ -403,7 +404,6 @@ class Scroller extends UIComponent
 		if( verticalScrollBar == null ) createVerticalScrollBar();
 		
 		//trace("CREATE VIEWPORT");
-		//trace( this.width, this.height );
 		var width:Float = this.Width;
 		var height:Float = this.Height;
 		var contentWidth:Float = this.contentWidth;

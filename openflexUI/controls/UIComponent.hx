@@ -10,6 +10,7 @@ import openfl.display.DisplayObject;
 import openfl.display.DisplayObjectContainer;
 import openfl.display.Sprite;
 import openfl.events.Event;
+import openfl.geom.Point;
 import openfl.geom.Rectangle;
 import openflexUI.events.FlexEvent;
 import openflexUI.layouts.HorizontalLayout;
@@ -65,12 +66,19 @@ class UIComponent extends Sprite
 	private var isEnd:Bool;
 	private var previousContentSize:Rectangle = new Rectangle();
 	
-	/**
-		 * The width of the viewport's content.
-		 */
-	public var contentWidth(get, never):Float;
+	override private function get_width()
+	{
+		if( this.mask == null ) return getWidth( false );
+		return this.mask.width;
+	}
 	
-	private function get_contentWidth()
+	override private function get_height()
+	{
+		if( this.mask == null ) return getHeight( false );
+		return this.mask.height;
+	}
+		
+	private function getWidth(content:Bool):Float
 	{
 		var width:Float = 0;
 		var childrens:Array<DisplayObject> = [];
@@ -92,7 +100,8 @@ class UIComponent extends Sprite
 		childrens.reverse();
 		childrenPosition.reverse();
 		
-		width = super.width;
+		//width = super.width;
+		width = measureSize( this, content ).width;
 		
 		for(i in 0...childrens.length)
 		{
@@ -102,11 +111,16 @@ class UIComponent extends Sprite
 	}
 	
 	/**
-		 * The height of the viewport's content.
+		 * The width of the viewport's content.
 		 */
-	public var contentHeight(get, never):Float;
+	public var contentWidth(get, never):Float;
 	
-	private function get_contentHeight()
+	private function get_contentWidth()
+	{
+		return getWidth( true );
+	}
+		
+	private function getHeight(content:Bool):Float
 	{
 		var height:Float = 0;
 		var childrens:Array<DisplayObject> = [];
@@ -128,13 +142,55 @@ class UIComponent extends Sprite
 		childrens.reverse();
 		childrenPosition.reverse();
 		
-		height = super.height;
+		//height = super.height;
+		height = measureSize( this, content ).height;
 		
 		for(i in 0...childrens.length)
 		{
 			this.addChildAt( childrens[i], childrenPosition[i] );
 		}
 		return height;
+	}
+	
+	/**
+		 * The height of the viewport's content.
+		 */
+	public var contentHeight(get, never):Float;
+	
+	private function get_contentHeight()
+	{
+		return getHeight( true );
+	}
+	
+	private var rect:Rectangle;
+	private function measureSize(displayObject:DisplayObjectContainer, content:Bool):Rectangle
+	{
+		if( displayObject == this ) this.rect = new Rectangle();
+		if( displayObject.numChildren == 0 ) return this.rect;
+		for(i in 0...displayObject.numChildren)
+		{
+			var rect:Rectangle = bounds( cast( displayObject.getChildAt(i), DisplayObjectContainer ) );
+			this.rect = this.rect.union( rect );
+			if( displayObject.getChildAt(i).mask != null && ! content ) continue;
+			measureSize( cast( displayObject.getChildAt(i), DisplayObjectContainer ), false );
+		}
+		return this.rect;
+	}
+	
+	private function bounds(displayObject:DisplayObjectContainer):Rectangle
+	{
+		var rect:Rectangle= new Rectangle();
+		var point:Point = new Point( displayObject.x, displayObject.y );
+		point = displayObject.parent.localToGlobal( point );
+		point = this.globalToLocal( point );
+		rect.x = point.x;
+		rect.y = point.y;
+		point = new Point( displayObject.x + displayObject.width, displayObject.y + displayObject.height );
+		point = displayObject.parent.localToGlobal( point );
+		point = this.globalToLocal( point );
+		rect.width = point.x - rect.x;
+		rect.height = point.y - rect.y;
+		return rect;
 	}
 	
 	@:dox(hide)
@@ -159,7 +215,6 @@ class UIComponent extends Sprite
 	private function createChildren():Void
 	{
 		//trace("CREATE CHILDREN");
-		//this.addChild();
 		if( ! isCreating )
 		{
 			this.addEventListener( Event.ENTER_FRAME, enterFrameCreationHandler );
@@ -214,7 +269,6 @@ class UIComponent extends Sprite
 	private function updateDisplayList(unscaledWidth:Float, unscaledHeight:Float):Void
 	{
 		//trace("UPDATELIST");
-		//trace(this.name, this.width, this.height);
 		var _width:Float = 0;
 		var _height:Float = 0;
 		var previous:Int = 0;
@@ -279,8 +333,9 @@ class UIComponent extends Sprite
 				}
 			}
 		}
+		var contentWidth:Float = this.contentWidth;
+		var contentHeight:Float = this.contentHeight;
 		this.visible = true;
-		//trace( this.name );
 		this.dispatchEvent( new FlexEvent( FlexEvent.COMPONENT_COMPLETE ) );
 		isEnd = true;
 		checkIsEnd( this );
@@ -294,8 +349,8 @@ class UIComponent extends Sprite
 		{
 			this.dispatchEvent( new Event( Event.RESIZE ) );
 		}
-		previousContentSize = new Rectangle( 0, 0, this.contentWidth, this.contentHeight );
-		this.removeEventListener( FlexEvent.COMPONENT_COMPLETE, creationCompleteHandler );
+		previousContentSize = new Rectangle( 0, 0, contentWidth, contentHeight );
+		//this.removeEventListener( FlexEvent.COMPONENT_COMPLETE, creationCompleteHandler );
 	}
 	
 	private function checkIsEnd(component:UIComponent):Void
@@ -322,14 +377,14 @@ class UIComponent extends Sprite
 	private function addedHandler(event:Event):Void
 	{
 		if( event.target == this ) return;
-		//trace( cast( event.target, Sprite ).name );
 		//if( Std.is( event.target, UIComponent ) )
+		if( this.getChildIndex( event.target ) == -1 ) return;
+		if( Reflect.hasField( event.target, "noLayout" ) ) return;
 		if( Reflect.hasField( event.target, "isUIComponent" ) )
 		{
 			if( ! cast( event.target, UIComponent ).includeInLayout ) return;
 			cast( event.target, UIComponent ).addEventListener( FlexEvent.COMPONENT_COMPLETE, creationCompleteHandler );
 		}
-		if( Reflect.hasField( event.target, "noLayout" ) ) return;
 		createChildren();
 	}
 	
@@ -337,12 +392,13 @@ class UIComponent extends Sprite
 	{
 		if( event.target == this ) return;
 		//if( Std.is( event.target, UIComponent ) )
+		if( this.getChildIndex( event.target ) == -1 ) return;
+		if( Reflect.hasField( event.target, "noLayout" ) ) return;
 		if( Reflect.hasField( event.target, "isUIComponent" ) )
 		{
 			if( ! cast( event.target, UIComponent ).includeInLayout ) return;
 			cast( event.target, UIComponent ).removeEventListener( FlexEvent.COMPONENT_COMPLETE, creationCompleteHandler );
 		}
-		if( Reflect.hasField( event.target, "noLayout" ) ) return;
 		createChildren();
 	}
 	
@@ -360,11 +416,11 @@ class UIComponent extends Sprite
 	
 	private function creationCompleteHandler(event:FlexEvent):Void
 	{
-		//cast( event.target, UIComponent ).removeEventListener( FlexEvent.COMPONENT_COMPLETE, creationCompleteHandler );
-		//trace( "creationCompleteHandler" + this.name );
-		invalidateProperties();
+		cast( event.currentTarget, UIComponent ).removeEventListener( FlexEvent.COMPONENT_COMPLETE, creationCompleteHandler );
+		/*invalidateProperties();
 		invalidateSize();
-		invalidateDisplayList();
+		invalidateDisplayList();*/
+		createChildren();
 	}
 	
 	private function valueCommitHandler(event:FlexEvent):Void
