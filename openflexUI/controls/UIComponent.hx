@@ -68,17 +68,17 @@ class UIComponent extends Sprite
 	
 	override private function get_width()
 	{
-		if( this.mask == null ) return getWidth( false );
+		if( this.mask == null ) return getWidth();
 		return this.mask.width;
 	}
 	
 	override private function get_height()
 	{
-		if( this.mask == null ) return getHeight( false );
+		if( this.mask == null ) return getHeight();
 		return this.mask.height;
 	}
 		
-	private function getWidth(content:Bool):Float
+	private function getWidth():Float
 	{
 		var width:Float = 0;
 		var childrens:Array<DisplayObject> = [];
@@ -101,7 +101,7 @@ class UIComponent extends Sprite
 		childrenPosition.reverse();
 		
 		//width = super.width;
-		width = measureSize( this, content ).width;
+		width = measureSize( this ).width;
 		
 		for(i in 0...childrens.length)
 		{
@@ -117,10 +117,10 @@ class UIComponent extends Sprite
 	
 	private function get_contentWidth()
 	{
-		return getWidth( true );
+		return getWidth();
 	}
 		
-	private function getHeight(content:Bool):Float
+	private function getHeight():Float
 	{
 		var height:Float = 0;
 		var childrens:Array<DisplayObject> = [];
@@ -143,7 +143,7 @@ class UIComponent extends Sprite
 		childrenPosition.reverse();
 		
 		//height = super.height;
-		height = measureSize( this, content ).height;
+		height = measureSize( this ).height;
 		
 		for(i in 0...childrens.length)
 		{
@@ -159,11 +159,11 @@ class UIComponent extends Sprite
 	
 	private function get_contentHeight()
 	{
-		return getHeight( true );
+		return getHeight();
 	}
 	
 	private var rect:Rectangle;
-	private function measureSize(displayObject:DisplayObjectContainer, content:Bool):Rectangle
+	private function measureSize(displayObject:DisplayObjectContainer):Rectangle
 	{
 		if( displayObject == this ) this.rect = new Rectangle();
 		if( displayObject.numChildren == 0 ) return this.rect;
@@ -171,8 +171,8 @@ class UIComponent extends Sprite
 		{
 			var rect:Rectangle = bounds( cast( displayObject.getChildAt(i), DisplayObjectContainer ) );
 			this.rect = this.rect.union( rect );
-			if( displayObject.getChildAt(i).mask != null && ! content ) continue;
-			measureSize( cast( displayObject.getChildAt(i), DisplayObjectContainer ), false );
+			if( displayObject.getChildAt(i).mask != null ) continue;
+			measureSize( cast( displayObject.getChildAt(i), DisplayObjectContainer ) );
 		}
 		return this.rect;
 	}

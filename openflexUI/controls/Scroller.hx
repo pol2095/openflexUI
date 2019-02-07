@@ -93,7 +93,7 @@ class Scroller extends UIComponent
 	private function get_Width()
 	{
 		var contentWidth:Float = this.contentWidth;
-		if( Math.isNaN( _width ) || _width > contentWidth ) return getWidth( true );
+		if( Math.isNaN( _width ) || _width > contentWidth ) return getWidth();
 		return _width;
 	}
 	
@@ -115,7 +115,7 @@ class Scroller extends UIComponent
 	private function get_Height()
 	{
 		var contentHeight:Float = this.contentHeight;
-		if( Math.isNaN( _height ) || _height > contentHeight ) return getHeight( true );
+		if( Math.isNaN( _height ) || _height > contentHeight ) return getHeight();
 		return _height;
 	}
 	
@@ -274,7 +274,7 @@ class Scroller extends UIComponent
 		return null;
 	}
 	
-	override private function getWidth(content:Bool):Float
+	override private function getWidth():Float
 	{
 		var width:Float = 0;
 		var childrens:Array<DisplayObject> = [];
@@ -303,7 +303,7 @@ class Scroller extends UIComponent
 		childrenPosition.reverse();
 		
 		//width = super.width;
-		width = measureSize( this, content ).width;
+		width = measureSize( this ).width;
 		
 		for(i in 0...childrens.length)
 		{
@@ -312,7 +312,7 @@ class Scroller extends UIComponent
 		return width;
 	}
 	
-	override private function getHeight(content:Bool):Float
+	override private function getHeight():Float
 	{
 		var height:Float = 0;
 		var childrens:Array<DisplayObject> = [];
@@ -341,7 +341,7 @@ class Scroller extends UIComponent
 		childrenPosition.reverse();
 		
 		//height = super.height;
-		height = measureSize( this, content ).height;
+		height = measureSize( this ).height;
 		
 		for(i in 0...childrens.length)
 		{
