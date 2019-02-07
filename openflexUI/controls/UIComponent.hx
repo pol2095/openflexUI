@@ -163,21 +163,22 @@ class UIComponent extends Sprite
 	}
 	
 	private var rect:Rectangle;
-	private function measureSize(displayObject:DisplayObjectContainer):Rectangle
+	private function measureSize(container:DisplayObjectContainer):Rectangle
 	{
-		if( displayObject == this ) this.rect = new Rectangle();
-		if( displayObject.numChildren == 0 ) return this.rect;
-		for(i in 0...displayObject.numChildren)
+		if( container == this ) this.rect = new Rectangle();
+		if( container.numChildren == 0 ) return this.rect;
+		for(i in 0...container.numChildren)
 		{
-			var rect:Rectangle = bounds( cast( displayObject.getChildAt(i), DisplayObjectContainer ) );
+			var displayObject:DisplayObject = container.getChildAt(i);
+			var rect:Rectangle = bounds( displayObject );
 			this.rect = this.rect.union( rect );
-			if( displayObject.getChildAt(i).mask != null ) continue;
-			measureSize( cast( displayObject.getChildAt(i), DisplayObjectContainer ) );
+			if( displayObject.mask != null ) continue;
+			measureSize( cast( displayObject, DisplayObjectContainer ) );
 		}
 		return this.rect;
 	}
 	
-	private function bounds(displayObject:DisplayObjectContainer):Rectangle
+	private function bounds(displayObject:DisplayObject):Rectangle
 	{
 		var rect:Rectangle= new Rectangle();
 		var point:Point = new Point( displayObject.x, displayObject.y );
