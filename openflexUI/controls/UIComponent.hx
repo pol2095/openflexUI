@@ -49,6 +49,8 @@ class UIComponent extends Sprite
 	private var _includeInLayout:Bool = true;
 	/**
 		 * Determines if the layout should use this object or ignore it.
+		 *
+		 * The default value is `true`
 		 */
 	public var includeInLayout(get, set):Bool;
 	
