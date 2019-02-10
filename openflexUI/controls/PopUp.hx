@@ -19,12 +19,16 @@ import openflexUI.events.FlexEvent;
  */
 class PopUp extends Sprite
 {
+	private var _isOpen:Bool = false;
 	/**
 		 * Indicates is the pop-up is open.
-		 *
-		 * The default value is `false`
 		 */
-	public var isOpen:Bool = false;
+	public var isOpen(get, never):Bool;
+	
+	private function get_isOpen()
+	{
+		return _isOpen;
+	}
 	
 	private var isCreated:Bool = false;
 	
@@ -113,7 +117,7 @@ class PopUp extends Sprite
 	public function open(popUp:DisplayObject, stage:Stage):Void
 	{
 		if( isOpen ) return;
-		isOpen = true;
+		_isOpen = true;
 		if( ! isCreated )
 		{
 			cast(stage, DisplayObjectContainer).addChild( this );
@@ -169,7 +173,7 @@ class PopUp extends Sprite
 	public function close(detail:Int = -1, dispose:Bool = false):Void
 	{
 		if( ! isOpen ) return;
-		isOpen = false;
+		_isOpen = false;
 		this.removeChild(container);
 		this.removeChild(background);
 		this.dispatchEvent( new CloseEvent( Event.CLOSE, false, false, detail ) );
