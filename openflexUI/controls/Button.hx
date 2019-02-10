@@ -6,15 +6,11 @@ accordance with the terms of the accompanying license agreement.
 */
 package openflexUI.controls;
 
-import openfl.display.BitmapData;
-import openfl.display.BlendMode;
-import openfl.display.DisplayObject;
+//import openfl.display.BitmapData;
 import openfl.display.Sprite;
 import openfl.events.Event;
 import openfl.events.MouseEvent;
-import openfl.geom.Point;
 import openfl.geom.Rectangle;
-import openfl.text.TextField;
 import openflexUI.controls.UIComponent;
 
 /**

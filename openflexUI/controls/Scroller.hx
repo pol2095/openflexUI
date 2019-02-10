@@ -6,7 +6,6 @@ accordance with the terms of the accompanying license agreement.
 */
 package openflexUI.controls;
 
-import openfl.display.BlendMode;
 import openfl.display.DisplayObject;
 import openfl.display.Sprite;
 import openfl.events.Event;
