@@ -14,14 +14,14 @@ class HorizontalLayout
 	/**
 		 * The vertical alignment of layout elements. Possible values are "top", "middle", or "bottom".
 		 *
-		 * The default value is "top"
+		 * The default value is `top`
 		 */
 	public var verticalAlign:String = "top";
 	
 	/**
 		 * The space, in pixels, between items..
 		 *
-		 * The default value is 0
+		 * The default value is `0`
 		 */
 	public var gap:Float = 0;
 	

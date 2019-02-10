@@ -14,14 +14,14 @@ class VerticalLayout
 	/**
 		 * The horizontal alignment of layout elements. Possible values are "left", "center", or "right".
 		 *
-		 * The default value is "left"
+		 * The default value is `left`
 		 */
 	public var horizontalAlign:String = "left";
 	
 	/**
 		 * The space, in pixels, between items..
 		 *
-		 * The default value is 0
+		 * The default value is `0`
 		 */
 	public var gap:Float = 0;
 	

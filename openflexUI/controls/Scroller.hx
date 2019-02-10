@@ -26,7 +26,7 @@ class Scroller extends UIComponent
 	/**
 		 * Indicates under what conditions the horizontal scroll bar is displayed. The acceptable values are "auto" or "off".
 		 *
-		 * The default value is "auto"
+		 * The default value is `auto`
 		 */
 	public var horizontalScrollPolicy(get, set):String;
 	
@@ -45,7 +45,7 @@ class Scroller extends UIComponent
 	/**
 		 * Indicates under what conditions the vertical scroll bar is displayed. The acceptable values are "auto" or "off".
 		 *
-		 * The default value is "auto"
+		 * The default value is `auto`
 		 */
 	public var verticalScrollPolicy(get, set):String;
 	
@@ -80,7 +80,7 @@ class Scroller extends UIComponent
 	/**
 		 * Swipe to scroll the viewport.
 		 *
-		 * The default value is true
+		 * The default value is `true`
 		 */
 	public var swipe:Bool = true;
 	private var previousIsPositiveSwipeX:Bool;

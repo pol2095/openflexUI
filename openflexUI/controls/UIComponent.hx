@@ -456,5 +456,12 @@ class UIComponent extends Sprite
 		this.removeEventListener(Event.REMOVED, removedHandler);
 		this.removeEventListener(Event.RENDER, renderHandler);
 		this.removeEventListener(FlexEvent.VALUE_COMMIT, valueCommitHandler);
+		for(i in 0...this.numChildren)
+		{
+			if( Reflect.hasField( this.getChildAt(i), "isUIComponent" ) )
+			{
+				cast( this.getChildAt(i), UIComponent ).dispose();
+			}
+		}
 	}
 }
