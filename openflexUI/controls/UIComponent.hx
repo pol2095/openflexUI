@@ -175,6 +175,7 @@ class UIComponent extends Sprite
 			var rect:Rectangle = bounds( displayObject );
 			this.rect = this.rect.union( rect );
 			if( displayObject.mask != null ) continue;
+			if( ! Std.is( displayObject, DisplayObjectContainer ) ) continue;
 			measureSize( cast( displayObject, DisplayObjectContainer ) );
 		}
 		return this.rect;
