@@ -197,6 +197,25 @@ class UIComponent extends Sprite
 		return rect;
 	}
 	
+	private var _enabled:Bool = true;
+	/**
+		 * Gets or sets a value that indicates whether the component can accept user input.
+		 * 
+		 * The default value is `true`
+		 */
+	public var enabled(get, set):Bool;
+	
+	private function get_enabled()
+	{
+		return _enabled;
+	}
+	
+	private function set_enabled(value:Bool)
+	{
+		createChildren();
+		return _enabled = value;
+	}
+	
 	@:dox(hide)
 	public function new()
 	{
@@ -355,6 +374,17 @@ class UIComponent extends Sprite
 		}
 		previousContentSize = new Rectangle( 0, 0, contentWidth, contentHeight );
 		//this.removeEventListener( FlexEvent.COMPONENT_COMPLETE, creationCompleteHandler );
+		
+		if( this.enabled )
+		{
+			this.alpha = 1;
+			this.mouseEnabled = this.mouseChildren = true;
+		}
+		else
+		{
+			this.alpha = 0.5;
+			this.mouseEnabled = this.mouseChildren = false;
+		}
 	}
 	
 	private function checkIsEnd(component:UIComponent):Void

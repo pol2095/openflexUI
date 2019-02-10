@@ -42,25 +42,6 @@ class Button extends UIComponent
 		return _label = value;
 	}
 	
-	private var _enabled:Bool = true;
-	/**
-		 * Gets or sets a value that indicates whether the component can accept user input.
-		 * 
-		 * The default value is `true`
-		 */
-	public var enabled(get, set):Bool;
-	
-	private function get_enabled()
-	{
-		return _enabled;
-	}
-	
-	private function set_enabled(value:Bool)
-	{
-		createChildren();
-		return _enabled = value;
-	}
-	
 	@:dox(hide)
 	public function new()
 	{
@@ -226,16 +207,6 @@ class Button extends UIComponent
 		labelUI.validate();
 		background.width = backgroundOver.width = backgroundDown.width = labelUI.width + padding * 2;
 		background.height = backgroundOver.height = backgroundDown.height = labelUI.height + padding * 2;
-		if( this.enabled )
-		{
-			this.alpha = 1;
-			this.mouseEnabled = this.mouseChildren = true;
-		}
-		else
-		{
-			this.alpha = 0.5;
-			this.mouseEnabled = this.mouseChildren = false;
-		}
 	}
 	
 	@:dox(hide)
