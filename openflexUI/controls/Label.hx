@@ -40,10 +40,8 @@ class Label extends UIComponent
 	public function new()
 	{
 		super();
-		var sprite:Sprite = new Sprite();
 		textField.selectable = false;
-		sprite.addChild( textField );
-		this.addChild(sprite);
+		this.addChild( textField );
 		this.addEventListener( Event.ADDED_TO_STAGE, addedToStageHandler );
 	}
 	
