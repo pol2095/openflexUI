@@ -6,11 +6,12 @@ accordance with the terms of the accompanying license agreement.
 */
 package openflexUI.controls;
 
-//import openfl.display.BitmapData;
+import openfl.display.BitmapData;
 import openfl.display.Sprite;
 import openfl.events.Event;
 import openfl.events.MouseEvent;
 import openfl.geom.Rectangle;
+import openfl.text.TextFormat;
 import openflexUI.controls.UIComponent;
 
 /**
@@ -18,10 +19,20 @@ import openflexUI.controls.UIComponent;
  */
 class Button extends UIComponent
 {	
+	/**
+		 * The left icon placement.
+		 */
+	public static var LEFT_ICON_PLACEMENT:String = "left";
+	/**
+		 * The right icon placement.
+		 */
+	public static var RIGHT_ICON_PLACEMENT:String = "right";
+	
 	private var background:Sprite = new Sprite();
 	private var backgroundOver:Sprite = new Sprite();
 	private var backgroundDown:Sprite = new Sprite();
 	private var labelUI:Label = new Label();
+	private var image:Image = new Image();
 	private var padding:Int = 4;
 	private var state:String = "upState";
 	
@@ -40,6 +51,59 @@ class Button extends UIComponent
 	{
 		createChildren();
 		return _label = value;
+	}
+	
+	private var _textFormat:TextFormat;
+	/**
+		 * Use textFormat to create specific text formatting for text fields.
+		 */
+	public var textFormat(get, set):TextFormat;
+	
+	private function get_textFormat()
+	{
+		return _textFormat;
+	}
+	
+	private function set_textFormat(value:TextFormat)
+	{
+		createChildren();
+		return _textFormat = value;
+	}
+	
+	private var _icon:BitmapData;
+	/**
+		 * BitmapData to use as the default icon.
+		 */
+	public var icon(get, set):BitmapData;
+	
+	private function get_icon()
+	{
+		return _icon;
+	}
+	
+	private function set_icon(value:BitmapData)
+	{
+		createChildren();
+		return _icon = value;
+	}
+	
+	private var _iconPlacement:String = "left";
+	/**
+		 * The placement of the icon, possible value are `left` or `right`.
+		 *
+		 * The default value is `left`
+		 */
+	public var iconPlacement(get, set):String;
+	
+	private function get_iconPlacement()
+	{
+		return _iconPlacement;
+	}
+	
+	private function set_iconPlacement(value:String)
+	{
+		createChildren();
+		return _iconPlacement = value;
 	}
 	
 	@:dox(hide)
@@ -121,8 +185,10 @@ class Button extends UIComponent
         backgroundDown.graphics.endFill();
 		backgroundDown.scale9Grid = new Rectangle( 2, 2, 96, 96 );
 		
-		labelUI.x = labelUI.y = padding;
-		this.addChild( labelUI );
+		labelUI.y = padding;
+		//this.addChild( labelUI );
+		image.y = padding;
+		//this.addChild( image );
 		
 		this.addEventListener( Event.ADDED_TO_STAGE, addedToStageHandler );
 	}
@@ -203,10 +269,57 @@ class Button extends UIComponent
 	
 	private function createButton():Void
 	{
-		labelUI.text = this.label;
-		labelUI.validate();
-		background.width = backgroundOver.width = backgroundDown.width = labelUI.width + padding * 2;
-		background.height = backgroundOver.height = backgroundDown.height = labelUI.height + padding * 2;
+		if( this.getChildIndex( labelUI ) != -1 ) this.removeChild( labelUI );
+		if( this.getChildIndex( image ) != -1 ) this.removeChild( image );
+		
+		if( icon == null || ( icon != null && this.label != "" ) )
+		{
+			labelUI.text = this.label;
+			if( this.textFormat != null ) labelUI.textFormat = this.textFormat;
+			this.addChild( labelUI );
+			labelUI.validate();
+		}
+		
+		if( icon != null )
+		{
+			image.source = icon;
+			this.addChild( image );
+			image.validate();
+		}
+		
+		if( icon == null )
+		{			
+			labelUI.x = padding;
+			
+			background.width = backgroundOver.width = backgroundDown.width = labelUI.width + padding * 2;
+			background.height = backgroundOver.height = backgroundDown.height = labelUI.height + padding * 2;
+		}
+		else if( this.label != "" )
+		{
+			image.height = labelUI.height;
+			image.scaleX = image.scaleY;
+			
+			if( iconPlacement == "left" )
+			{
+				image.x = padding;
+				labelUI.x = image.width + padding;
+			}
+			else
+			{
+				labelUI.x = padding;
+				image.x = labelUI.width + padding;
+			}
+			
+			background.width = backgroundOver.width = backgroundDown.width = labelUI.width + image.width + padding * 3;
+			background.height = backgroundOver.height = backgroundDown.height = image.height + padding * 2;
+		}
+		else if( this.label == "" )
+		{			
+			image.x = padding;
+			
+			background.width = backgroundOver.width = backgroundDown.width = image.width + padding * 2;
+			background.height = backgroundOver.height = backgroundDown.height = image.height + padding * 2;
+		}
 	}
 	
 	@:dox(hide)

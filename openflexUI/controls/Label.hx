@@ -9,6 +9,7 @@ package openflexUI.controls;
 import openfl.display.Sprite;
 import openfl.events.Event;
 import openfl.text.TextField;
+import openfl.text.TextFormat;
 import openfl.text.TextFieldAutoSize;
 import openflexUI.controls.UIComponent;
 
@@ -36,6 +37,23 @@ class Label extends UIComponent
 		return _text = value;
 	}
 	
+	private var _textFormat:TextFormat;
+	/**
+		 * Use textFormat to create specific text formatting for text fields.
+		 */
+	public var textFormat(get, set):TextFormat;
+	
+	private function get_textFormat()
+	{
+		return _textFormat;
+	}
+	
+	private function set_textFormat(value:TextFormat)
+	{
+		createChildren();
+		return _textFormat = value;
+	}
+	
 	@:dox(hide)
 	public function new()
 	{
@@ -58,6 +76,7 @@ class Label extends UIComponent
 	
 	private function createLabel():Void
 	{
+		if( this.textFormat != null ) textField.defaultTextFormat = this.textFormat;
 		textField.text = this.text;
 		textField.autoSize = TextFieldAutoSize.LEFT;
 	}

@@ -186,12 +186,12 @@ class UIComponent extends Sprite
 		var rect:Rectangle= new Rectangle();
 		var point:Point = new Point( displayObject.x, displayObject.y );
 		point = displayObject.parent.localToGlobal( point );
-		point = this.globalToLocal( point );
+		point = parent.globalToLocal( point );
 		rect.x = point.x;
 		rect.y = point.y;
 		point = new Point( displayObject.x + displayObject.width, displayObject.y + displayObject.height );
 		point = displayObject.parent.localToGlobal( point );
-		point = this.globalToLocal( point );
+		point = parent.globalToLocal( point );
 		rect.width = point.x - rect.x;
 		rect.height = point.y - rect.y;
 		return rect;
@@ -451,10 +451,16 @@ class UIComponent extends Sprite
 	private function creationCompleteHandler(event:FlexEvent):Void
 	{
 		cast( event.currentTarget, UIComponent ).removeEventListener( FlexEvent.COMPONENT_COMPLETE, creationCompleteHandler );
-		/*invalidateProperties();
+		this.addEventListener( Event.EXIT_FRAME, exitFrameHandler );
+	}
+	
+	private function exitFrameHandler(event:Event):Void
+	{
+		this.removeEventListener( Event.EXIT_FRAME, exitFrameHandler );
+		invalidateProperties();
 		invalidateSize();
-		invalidateDisplayList();*/
-		createChildren();
+		invalidateDisplayList();
+		//createChildren();
 	}
 	
 	private function valueCommitHandler(event:FlexEvent):Void
