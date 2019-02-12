@@ -22,6 +22,7 @@ import openflexUI.layouts.VerticalLayout;
 class UIComponent extends Sprite
 {
 	private var isCreating:Bool;
+	private var isValidate:Bool;
 	/**
 		 * Determines if the component has been initialized and validated for the first time.
 		 */
@@ -186,6 +187,7 @@ class UIComponent extends Sprite
 		var rect:Rectangle= new Rectangle();
 		var point:Point = new Point( displayObject.x, displayObject.y );
 		point = displayObject.parent.localToGlobal( point );
+		if( parent == null ) throw "The UIComponent must be added to the stage.";
 		point = parent.globalToLocal( point );
 		rect.x = point.x;
 		rect.y = point.y;
@@ -451,7 +453,7 @@ class UIComponent extends Sprite
 	private function creationCompleteHandler(event:FlexEvent):Void
 	{
 		cast( event.currentTarget, UIComponent ).removeEventListener( FlexEvent.COMPONENT_COMPLETE, creationCompleteHandler );
-		this.addEventListener( Event.EXIT_FRAME, exitFrameHandler );
+		if( ! isValidate ) this.addEventListener( Event.EXIT_FRAME, exitFrameHandler );
 		/*invalidateProperties();
 		invalidateSize();
 		invalidateDisplayList();*/
@@ -476,7 +478,7 @@ class UIComponent extends Sprite
 	{
 		if( isCreating )
 		{
-			enterFrameCreationHandler();
+			isValidate = true;
 			for(i in 0...this.numChildren)
 			{
 				if( Reflect.hasField( this.getChildAt(i), "isUIComponent" ) )
@@ -484,6 +486,8 @@ class UIComponent extends Sprite
 					cast( this.getChildAt(i), UIComponent ).validate();
 				}
 			}
+			enterFrameCreationHandler();
+			isValidate = false;
 		}
 	}
 	

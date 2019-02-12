@@ -59,7 +59,6 @@ class Label extends UIComponent
 	{
 		super();
 		textField.selectable = false;
-		this.addChild( textField );
 		this.addEventListener( Event.ADDED_TO_STAGE, addedToStageHandler );
 	}
 	
@@ -76,6 +75,7 @@ class Label extends UIComponent
 	
 	private function createLabel():Void
 	{
+		if( this.getChildIndex( textField ) == -1 )  this.addChild( textField );
 		if( this.textFormat != null ) textField.defaultTextFormat = this.textFormat;
 		textField.text = this.text;
 		textField.autoSize = TextFieldAutoSize.LEFT;
