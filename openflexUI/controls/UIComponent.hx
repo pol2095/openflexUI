@@ -452,15 +452,16 @@ class UIComponent extends Sprite
 	{
 		cast( event.currentTarget, UIComponent ).removeEventListener( FlexEvent.COMPONENT_COMPLETE, creationCompleteHandler );
 		this.addEventListener( Event.EXIT_FRAME, exitFrameHandler );
+		/*invalidateProperties();
+		invalidateSize();
+		invalidateDisplayList();*/
+		//createChildren();
 	}
 	
 	private function exitFrameHandler(event:Event):Void
 	{
 		this.removeEventListener( Event.EXIT_FRAME, exitFrameHandler );
-		invalidateProperties();
-		invalidateSize();
-		invalidateDisplayList();
-		//createChildren();
+		enterFrameCreationHandler();
 	}
 	
 	private function valueCommitHandler(event:FlexEvent):Void
