@@ -41,8 +41,9 @@ class UIComponent extends Sprite
 	
 	private function set_layout(value:Dynamic)
 	{
+		_layout = value;
 		createChildren();
-		return _layout = value;
+		return value;
 	}
 	
 	//public var isUIComponent:Bool = true;
@@ -62,8 +63,9 @@ class UIComponent extends Sprite
 	
 	private function set_includeInLayout(value:Bool)
 	{
+		_includeInLayout = value;
 		createChildren();
-		return _includeInLayout = value;
+		return value;
 	}
 	
 	private var isEnd:Bool;
@@ -218,8 +220,9 @@ class UIComponent extends Sprite
 	
 	private function set_enabled(value:Bool)
 	{
+		_enabled = value;
 		createChildren();
-		return _enabled = value;
+		return value;
 	}
 	
 	@:dox(hide)

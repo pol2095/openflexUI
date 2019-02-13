@@ -36,8 +36,9 @@ class Scroller extends UIComponent
 	
 	private function set_horizontalScrollPolicy(value:String)
 	{
+		_horizontalScrollPolicy = value;
 		createChildren();
-		return _horizontalScrollPolicy = value;
+		return value;
 	}
 	
 	private var _verticalScrollPolicy:String = "auto";
@@ -55,8 +56,9 @@ class Scroller extends UIComponent
 	
 	private function set_verticalScrollPolicy(value:String)
 	{
+		_verticalScrollPolicy = value;
 		createChildren();
-		return _verticalScrollPolicy = value;
+		return value;
 	}
 	
 	private var horizontalScrollBar:Sprite;
@@ -103,8 +105,9 @@ class Scroller extends UIComponent
 	
 	override private function set_width(value:Float)
 	{
+		_width = value;
 		createChildren();
-		return _width = value;
+		return value;
 	}
 	
 	private var _height:Float = Math.NaN;
@@ -125,8 +128,9 @@ class Scroller extends UIComponent
 	
 	override private function set_height(value:Float)
 	{
+		_height = value;
 		createChildren();
-		return _height = value;
+		return value;
 	}
 	
 	private var _x:Float = 0;
