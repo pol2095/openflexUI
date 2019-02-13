@@ -33,8 +33,9 @@ class Label extends UIComponent
 	
 	private function set_text(value:String)
 	{
+		_text = value;
 		createChildren();
-		return _text = value;
+		return value;
 	}
 	
 	private var _textFormat:TextFormat;
@@ -50,15 +51,18 @@ class Label extends UIComponent
 	
 	private function set_textFormat(value:TextFormat)
 	{
+		_textFormat = value;
 		createChildren();
-		return _textFormat = value;
+		return value;
 	}
 	
 	@:dox(hide)
 	public function new()
 	{
 		super();
+		Reflect.setProperty(textField, "noLayout", true);
 		textField.selectable = false;
+		this.addChild( textField );
 		this.addEventListener( Event.ADDED_TO_STAGE, addedToStageHandler );
 	}
 	
@@ -75,7 +79,6 @@ class Label extends UIComponent
 	
 	private function createLabel():Void
 	{
-		if( this.getChildIndex( textField ) == -1 )  this.addChild( textField );
 		if( this.textFormat != null ) textField.defaultTextFormat = this.textFormat;
 		textField.text = this.text;
 		textField.autoSize = TextFieldAutoSize.LEFT;

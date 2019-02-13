@@ -49,8 +49,9 @@ class Button extends UIComponent
 	
 	private function set_label(value:String)
 	{
+		_label = value;
 		createChildren();
-		return _label = value;
+		return value;
 	}
 	
 	private var _textFormat:TextFormat;
@@ -66,8 +67,9 @@ class Button extends UIComponent
 	
 	private function set_textFormat(value:TextFormat)
 	{
+		_textFormat = value;
 		createChildren();
-		return _textFormat = value;
+		return value;
 	}
 	
 	private var _icon:BitmapData;
@@ -83,8 +85,9 @@ class Button extends UIComponent
 	
 	private function set_icon(value:BitmapData)
 	{
+		_icon = value;
 		createChildren();
-		return _icon = value;
+		return value;
 	}
 	
 	private var _iconPlacement:String = "left";
@@ -149,6 +152,7 @@ class Button extends UIComponent
 		}
 		
 		background.scale9Grid = rect;*/
+		Reflect.setProperty(background, "noLayout", true);
 		this.addChild( background );
 		
 		backgroundOver.graphics.beginFill(0x000000);
@@ -167,6 +171,7 @@ class Button extends UIComponent
         backgroundOver.graphics.drawRect(1, 1, 98, 98);
         backgroundOver.graphics.endFill();
 		backgroundOver.scale9Grid = new Rectangle( 1, 1, 98, 98 );
+		Reflect.setProperty(backgroundOver, "noLayout", true);
 		
 		backgroundDown.graphics.beginFill(0x000000);
 		backgroundDown.graphics.drawRect(0, 0, 100, 2);
@@ -184,9 +189,12 @@ class Button extends UIComponent
         backgroundDown.graphics.drawRect(2, 2, 96, 96);
         backgroundDown.graphics.endFill();
 		backgroundDown.scale9Grid = new Rectangle( 2, 2, 96, 96 );
+		Reflect.setProperty(backgroundDown, "noLayout", true);
 		
+		Reflect.setProperty(labelUI, "noLayout", true);
 		labelUI.y = padding;
 		//this.addChild( labelUI );
+		Reflect.setProperty(image, "noLayout", true);
 		image.y = padding;
 		//this.addChild( image );
 		
@@ -259,6 +267,11 @@ class Button extends UIComponent
 		{
 			this.removeChild( backgroundDown );
 		}
+	}
+	
+	override private function createChildren():Void
+	{		
+		super.createChildren();
 	}
 	
 	override private function updateDisplayList(unscaledWidth:Float, unscaledHeight:Float):Void

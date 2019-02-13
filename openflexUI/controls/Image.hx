@@ -17,7 +17,7 @@ import openflexUI.controls.UIComponent;
  */
 class Image extends UIComponent
 {	
-	private var bitmap:Bitmap;
+	private var bitmap:Bitmap = new Bitmap();
 	
 	private var _source:BitmapData;
 	/**
@@ -32,15 +32,17 @@ class Image extends UIComponent
 	
 	private function set_source(value:BitmapData)
 	{
+		_source = value;
 		createChildren();
-		return _source = value;
+		return value;
 	}
 	
 	@:dox(hide)
 	public function new()
 	{
 		super();
-		
+		Reflect.setProperty(bitmap, "noLayout", true);
+		this.addChild( bitmap );
 		this.addEventListener( Event.ADDED_TO_STAGE, addedToStageHandler );
 	}
 	
@@ -57,9 +59,10 @@ class Image extends UIComponent
 	
 	private function createImage():Void
 	{
-		if( bitmap != null ) this.removeChild( bitmap );
+		/*if( bitmap != null ) this.removeChild( bitmap );
 		bitmap = new Bitmap( source );
-		this.addChild( bitmap );
+		this.addChild( bitmap );*/
+		bitmap.bitmapData = source;
 	}
 	
 	@:dox(hide)
