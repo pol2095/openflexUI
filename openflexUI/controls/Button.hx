@@ -280,6 +280,7 @@ class Button extends UIComponent
 		this.addChild( backgroundDown );
 		this.setChildIndex( backgroundDown, 0 );
 		if( toggle ) _isSelected = ! _isSelected;
+		if( this.getChildIndex( backgroundOver ) != -1 ) this.removeChild( backgroundOver );
 	}
 	
 	private function mouseUpHandler(event:MouseEvent):Void
@@ -288,6 +289,11 @@ class Button extends UIComponent
 		if( ! rect.contains( stage.mouseX, stage.mouseY ) )
 		{
 			if( this.getChildIndex( backgroundOver ) != -1 ) this.removeChild( backgroundOver );
+		}
+		else if( this.getChildIndex( backgroundOver ) == -1 )
+		{
+			this.addChild( backgroundOver );
+			this.setChildIndex( backgroundOver, 1 );
 		}
 		if( toggle && isSelected ) return;
 		removeBackground();
@@ -300,6 +306,7 @@ class Button extends UIComponent
 	{
 		//removeBackground();
 		//state = "overState";
+		if( this.getChildIndex( backgroundOver ) != -1 ) return;
 		this.addChild( backgroundOver );
 		this.setChildIndex( backgroundOver, 1 );
 	}
@@ -307,6 +314,7 @@ class Button extends UIComponent
 	private function rollOutHandler(event:MouseEvent):Void
 	{
 		//removeBackground();
+		if( this.getChildIndex( backgroundOver ) == -1 ) return;
 		this.removeChild( backgroundOver );
 	}
 	
