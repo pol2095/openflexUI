@@ -346,14 +346,6 @@ class Button extends UIComponent
 		if( this.getChildIndex( labelUI ) != -1 ) this.removeChild( labelUI );
 		if( this.getChildIndex( image ) != -1 ) this.removeChild( image );
 		
-		if( icon == null || ( icon != null && this.label != "" ) )
-		{
-			labelUI.text = this.label;
-			if( this.textFormat != null ) labelUI.textFormat = this.textFormat;
-			this.addChild( labelUI );
-			labelUI.validate();
-		}
-		
 		if( icon != null )
 		{
 			image.source = icon;
@@ -361,17 +353,32 @@ class Button extends UIComponent
 			image.validate();
 		}
 		
+		if( icon == null || ( icon != null && this.label != "" ) )
+		{
+			labelUI.text = this.label;
+			if( this.textFormat != null ) labelUI.textFormat = this.textFormat;
+			labelUI.text = Math.isNaN( maxWidth ) || icon != null ? this.label : labelUI.truncateLabel(this.label, padding * 2, this.maxWidth);
+			this.addChild( labelUI );
+			labelUI.validate();
+		}
+		
 		if( icon == null )
 		{			
 			labelUI.x = padding;
 			
-			background.width = backgroundOver.width = backgroundDown.width = labelUI.width + padding * 2;
+			background.width = backgroundOver.width = backgroundDown.width = Math.isNaN( minWidth ) ? labelUI.width + padding * 2 : minWidth;
 			background.height = backgroundOver.height = backgroundDown.height = labelUI.height + padding * 2;
 		}
 		else if( this.label != "" )
 		{
 			image.height = labelUI.height;
 			image.scaleX = image.scaleY;
+			
+			if( ! Math.isNaN( maxWidth ) )
+			{
+				labelUI.text =  labelUI.truncateLabel(this.label, image.width + padding * 3, this.maxWidth);
+				labelUI.validate();
+			}
 			
 			if( iconPlacement == "left" )
 			{
@@ -384,7 +391,7 @@ class Button extends UIComponent
 				image.x = labelUI.width + padding;
 			}
 			
-			background.width = backgroundOver.width = backgroundDown.width = labelUI.width + image.width + padding * 3;
+			background.width = backgroundOver.width = backgroundDown.width = Math.isNaN( minWidth ) ? labelUI.width + image.width + padding * 3 : minWidth;
 			background.height = backgroundOver.height = backgroundDown.height = image.height + padding * 2;
 		}
 		else if( this.label == "" )

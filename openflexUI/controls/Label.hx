@@ -55,7 +55,7 @@ class Label extends UIComponent
 		createChildren();
 		return value;
 	}
-	
+		
 	@:dox(hide)
 	public function new()
 	{
@@ -80,8 +80,31 @@ class Label extends UIComponent
 	private function createLabel():Void
 	{
 		if( this.textFormat != null ) textField.defaultTextFormat = this.textFormat;
-		textField.text = this.text;
+		textField.text = Math.isNaN( maxWidth ) ? this.text : truncateLabel( this.text );
 		textField.autoSize = TextFieldAutoSize.LEFT;
+	}
+	
+	@:dox(hide)
+	public function truncateLabel(text:String, padding:Float = 0, maxWidth:Float = null):String
+	{
+		if( maxWidth == null ) maxWidth = this.maxWidth;
+		var textField:TextField = new TextField();
+		if( this.textFormat != null ) textField.defaultTextFormat = this.textFormat;
+		textField.text = text;
+		textField.autoSize = TextFieldAutoSize.LEFT;
+		if( textField.width + padding > maxWidth )
+		{
+			var originalText:String = textField.text;
+			for(i in 0...originalText.length)
+			{
+				textField.text = originalText.substring(0, i) + "...";
+				if (textField.width + padding > maxWidth)
+				{
+					return originalText.substring(0, i - 1) + "...";
+				}
+			}
+		}
+		return text;
 	}
 	
 	@:dox(hide)

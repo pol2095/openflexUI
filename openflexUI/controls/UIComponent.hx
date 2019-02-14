@@ -225,6 +225,78 @@ class UIComponent extends Sprite
 		return value;
 	}
 	
+	private var _maxWidth:Float = Math.NaN;
+	/**
+		 * The maximum recommended width of the component to be considered by the parent during layout.
+		 */
+	public var maxWidth(get, set):Float;
+	
+	private function get_maxWidth()
+	{
+		return _maxWidth;
+	}
+	
+	private function set_maxWidth(value:Float)
+	{
+		_maxWidth = value;
+		createChildren();
+		return value;
+	}
+	
+	private var _maxHeight:Float = Math.NaN;
+	/**
+		 * The maximum recommended height of the component to be considered by the parent during layout.
+		 */
+	public var maxHeight(get, set):Float;
+	
+	private function get_maxHeight()
+	{
+		return _maxHeight;
+	}
+	
+	private function set_maxHeight(value:Float)
+	{
+		_maxHeight = value;
+		createChildren();
+		return value;
+	}
+	
+	private var _minWidth:Float = Math.NaN;
+	/**
+		 * The minimum recommended width of the component to be considered by the parent during layout.
+		 */
+	public var minWidth(get, set):Float;
+	
+	private function get_minWidth()
+	{
+		return _minWidth;
+	}
+	
+	private function set_minWidth(value:Float)
+	{
+		_minWidth = value;
+		createChildren();
+		return value;
+	}
+	
+	private var _minHeight:Float = Math.NaN;
+	/**
+		 * The minimum recommended height of the component to be considered by the parent during layout.
+		 */
+	public var minHeight(get, set):Float;
+	
+	private function get_minHeight()
+	{
+		return _minHeight;
+	}
+	
+	private function set_minHeight(value:Float)
+	{
+		_minHeight = value;
+		createChildren();
+		return value;
+	}
+	
 	@:dox(hide)
 	public function new()
 	{
