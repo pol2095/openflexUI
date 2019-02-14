@@ -346,13 +346,6 @@ class Button extends UIComponent
 		if( this.getChildIndex( labelUI ) != -1 ) this.removeChild( labelUI );
 		if( this.getChildIndex( image ) != -1 ) this.removeChild( image );
 		
-		if( icon != null )
-		{
-			image.source = icon;
-			this.addChild( image );
-			image.validate();
-		}
-		
 		if( icon == null || ( icon != null && this.label != "" ) )
 		{
 			labelUI.text = this.label;
@@ -360,6 +353,13 @@ class Button extends UIComponent
 			labelUI.text = Math.isNaN( maxWidth ) || icon != null ? this.label : labelUI.truncateLabel(this.label, padding * 2, this.maxWidth);
 			this.addChild( labelUI );
 			labelUI.validate();
+		}
+		
+		if( icon != null )
+		{
+			image.source = icon;
+			this.addChild( image );
+			image.validate();
 		}
 		
 		if( icon == null )
