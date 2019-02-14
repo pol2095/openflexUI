@@ -105,8 +105,69 @@ class Button extends UIComponent
 	
 	private function set_iconPlacement(value:String)
 	{
+		_iconPlacement = value;
 		createChildren();
-		return _iconPlacement = value;
+		return value;
+	}
+	
+	private var _toggle:Bool;
+	/**
+		 * A button that may be selected and deselected when triggered.
+		 *
+		 * The default value is `false`
+		 */
+	public var toggle(get, set):Bool;
+	
+	private function get_toggle()
+	{
+		return _toggle;
+	}
+	
+	private function set_toggle(value:Bool)
+	{
+		if( value == toggle ) return value;
+		_toggle = value;
+		if( isSelected && ! toggle )
+		{
+			removeBackground();
+			state = "upState";
+			this.addChild( background );
+			this.setChildIndex( background, 0 );
+			_isSelected = false;
+		}
+		return value;
+	}
+	
+	private var _isSelected:Bool;
+	/**
+		 * Indicates if the button is selected or not.
+		 */
+	public var isSelected(get, set):Bool;
+	
+	private function get_isSelected()
+	{
+		return _isSelected;
+	}
+	
+	private function set_isSelected(value:Bool)
+	{
+		if( ! toggle ) return value;
+		if( value == isSelected ) return value;
+		_isSelected = value;
+		removeBackground();
+		if( ! isSelected )
+		{
+			state = "upState";
+			this.addChild( background );
+			this.setChildIndex( background, 0 );
+		}
+		else
+		{
+			state = "downState";
+			this.addChild( backgroundDown );
+			this.setChildIndex( backgroundDown, 0 );
+		}
+		return value;
 	}
 	
 	@:dox(hide)
@@ -167,11 +228,12 @@ class Button extends UIComponent
 		backgroundOver.graphics.beginFill(0x000000);
 		backgroundOver.graphics.drawRect(0, 99, 100, 1);
         backgroundOver.graphics.endFill();
-		backgroundOver.graphics.beginFill(0xafafaf);
+		backgroundOver.graphics.beginFill(0x727272);
         backgroundOver.graphics.drawRect(1, 1, 98, 98);
         backgroundOver.graphics.endFill();
 		backgroundOver.scale9Grid = new Rectangle( 1, 1, 98, 98 );
 		Reflect.setProperty(backgroundOver, "noLayout", true);
+		backgroundOver.alpha = 0.1;
 		
 		backgroundDown.graphics.beginFill(0x000000);
 		backgroundDown.graphics.drawRect(0, 0, 100, 2);
@@ -217,40 +279,35 @@ class Button extends UIComponent
 		state = "downState";
 		this.addChild( backgroundDown );
 		this.setChildIndex( backgroundDown, 0 );
+		if( toggle ) _isSelected = ! _isSelected;
 	}
 	
 	private function mouseUpHandler(event:MouseEvent):Void
 	{
-		removeBackground();
 		var rect:Rectangle = this.getBounds( stage );
-		if( rect.contains( stage.mouseX, stage.mouseY ) )
+		if( ! rect.contains( stage.mouseX, stage.mouseY ) )
 		{
-			state = "overState";
-			this.addChild( backgroundOver );
-			this.setChildIndex( backgroundOver, 0 );
+			if( this.getChildIndex( backgroundOver ) != -1 ) this.removeChild( backgroundOver );
 		}
-		else
-		{
-			state = "upState";
-			this.addChild( background );
-			this.setChildIndex( background, 0 );
-		}
-	}
-	
-	private function rollOverHandler(event:MouseEvent):Void
-	{
-		removeBackground();
-		state = "overState";
-		this.addChild( backgroundOver );
-		this.setChildIndex( backgroundOver, 0 );
-	}
-	
-	private function rollOutHandler(event:MouseEvent):Void
-	{
+		if( toggle && isSelected ) return;
 		removeBackground();
 		state = "upState";
 		this.addChild( background );
 		this.setChildIndex( background, 0 );
+	}
+	
+	private function rollOverHandler(event:MouseEvent):Void
+	{
+		//removeBackground();
+		//state = "overState";
+		this.addChild( backgroundOver );
+		this.setChildIndex( backgroundOver, 1 );
+	}
+	
+	private function rollOutHandler(event:MouseEvent):Void
+	{
+		//removeBackground();
+		this.removeChild( backgroundOver );
 	}
 	
 	private function removeBackground():Void
@@ -258,10 +315,6 @@ class Button extends UIComponent
 		if( state == "upState" )
 		{
 			this.removeChild( background );
-		}
-		else if( state == "overState" )
-		{
-			this.removeChild( backgroundOver );
 		}
 		else if( state == "downState" )
 		{
