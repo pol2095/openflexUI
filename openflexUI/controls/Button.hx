@@ -6,10 +6,7 @@ accordance with the terms of the accompanying license agreement.
 */
 package openflexUI.controls;
 
-import openfl.display.Bitmap;
 import openfl.display.BitmapData;
-import openfl.display.BlendMode;
-import openfl.display.Shape;
 import openfl.display.Sprite;
 import openfl.events.Event;
 import openfl.events.MouseEvent;
@@ -209,7 +206,7 @@ class Button extends UIComponent
         backgroundBorder.graphics.drawRoundRect(0, 0, size, size, cornerRadius);
         backgroundBorder.graphics.endFill();
 		
-		backgroundBorder.scale9Grid = new Rectangle( borderSize * 2, borderSize * 2, size - borderSize * 4, size - borderSize * 4 );
+		//backgroundBorder.scale9Grid = new Rectangle( borderSize * 2, borderSize * 2, size - borderSize * 4, size - borderSize * 4 );
 		Reflect.setProperty(backgroundBorder, "noLayout", true);
 		this.addChild( backgroundBorder );
 		
@@ -218,7 +215,7 @@ class Button extends UIComponent
         background.graphics.drawRoundRect(0, 0, size, size, cornerRadius);
         background.graphics.endFill();
 		background.x = background.y = borderSize;
-		background.scale9Grid = new Rectangle( borderSize * 2, borderSize * 2, size - borderSize * 4, size - borderSize * 4 );
+		//background.scale9Grid = new Rectangle( borderSize * 2, borderSize * 2, size - borderSize * 4, size - borderSize * 4 );
 		
 		/*var bitmapData:BitmapData = new BitmapData( Std.int(background.width), Std.int(background.height), true, 0);
 		bitmapData.draw(background);
@@ -248,7 +245,7 @@ class Button extends UIComponent
         backgroundOver.graphics.drawRoundRect(0, 0, size, size, cornerRadius);
         backgroundOver.graphics.endFill();
 		backgroundOver.x = backgroundOver.y = borderSize;
-		backgroundOver.scale9Grid = new Rectangle( borderSize * 2, borderSize * 2, size - borderSize * 4, size - borderSize * 4 );
+		//backgroundOver.scale9Grid = new Rectangle( borderSize * 2, borderSize * 2, size - borderSize * 4, size - borderSize * 4 );
 		Reflect.setProperty(backgroundOver, "noLayout", true);
 		backgroundOver.alpha = 0.1;
 		
@@ -257,7 +254,7 @@ class Button extends UIComponent
         backgroundDown.graphics.drawRoundRect(0, 0, size, size, cornerRadius);
         backgroundDown.graphics.endFill();
 		backgroundDown.x = backgroundDown.y = borderSize * 2;
-		backgroundDown.scale9Grid = new Rectangle( borderSize * 2, borderSize * 2, size - borderSize * 4, size - borderSize * 4 );
+		//backgroundDown.scale9Grid = new Rectangle( borderSize * 2, borderSize * 2, size - borderSize * 4, size - borderSize * 4 );
 		Reflect.setProperty(backgroundDown, "noLayout", true);
 		
 		this.addEventListener( Event.ADDED_TO_STAGE, addedToStageHandler );

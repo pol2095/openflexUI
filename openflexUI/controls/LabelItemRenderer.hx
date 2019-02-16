@@ -6,10 +6,7 @@ accordance with the terms of the accompanying license agreement.
 */
 package openflexUI.controls;
 
-import openfl.display.Bitmap;
 import openfl.display.BitmapData;
-import openfl.display.BlendMode;
-import openfl.display.Shape;
 import openfl.display.Sprite;
 import openfl.events.Event;
 import openfl.events.MouseEvent;
