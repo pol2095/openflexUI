@@ -6,7 +6,10 @@ accordance with the terms of the accompanying license agreement.
 */
 package openflexUI.controls;
 
+import openfl.display.Bitmap;
 import openfl.display.BitmapData;
+import openfl.display.BlendMode;
+import openfl.display.Shape;
 import openfl.display.Sprite;
 import openfl.events.Event;
 import openfl.events.MouseEvent;
@@ -31,10 +34,16 @@ class Button extends UIComponent
 	private var background:Sprite = new Sprite();
 	private var backgroundOver:Sprite = new Sprite();
 	private var backgroundDown:Sprite = new Sprite();
-	private var labelUI:Label = new Label();
-	private var image:Image = new Image();
+	private var backgroundBorder:Sprite = new Sprite();
 	private var padding:Int = 4;
 	private var state:String = "upState";
+	private var labelItemRenderer:LabelItemRenderer;
+	private var borderSize:Int = 1;
+	private var cornerRadius:Int;
+	private var backgroundColor:Int = 0xCCCCCC;
+	private var backgroundOverColor:Int = 0x727272;
+	private var backgroundDownColor:Int = 0xa3a3a3;
+	private var backgroundBorderColor:Int = 0x000000;
 	
 	private var _label:String = "";
 	/**
@@ -132,7 +141,7 @@ class Button extends UIComponent
 			removeBackground();
 			state = "upState";
 			this.addChild( background );
-			this.setChildIndex( background, 0 );
+			this.setChildIndex( background, 1 );
 			_isSelected = false;
 		}
 		return value;
@@ -159,14 +168,32 @@ class Button extends UIComponent
 		{
 			state = "upState";
 			this.addChild( background );
-			this.setChildIndex( background, 0 );
+			this.setChildIndex( background, 1 );
 		}
 		else
 		{
 			state = "downState";
 			this.addChild( backgroundDown );
-			this.setChildIndex( backgroundDown, 0 );
+			this.setChildIndex( backgroundDown, 1 );
 		}
+		return value;
+	}
+	
+	private var _itemRenderer:UIComponent;
+	/**
+		 * Use itemRenderer to create specific text formatting for text fields.
+		 */
+	public var itemRenderer(get, set):UIComponent;
+	
+	private function get_itemRenderer()
+	{
+		return _itemRenderer;
+	}
+	
+	private function set_itemRenderer(value:UIComponent)
+	{
+		_itemRenderer = value;
+		createChildren();
 		return value;
 	}
 	
@@ -175,22 +202,23 @@ class Button extends UIComponent
 	{
 		super();
 		
-		background.graphics.beginFill(0x000000);
-		background.graphics.drawRect(0, 0, 100, 1);
+		cornerRadius = borderSize * 4;
+				
+		var size:Float = 100;
+		backgroundBorder.graphics.beginFill(backgroundBorderColor);
+        backgroundBorder.graphics.drawRoundRect(0, 0, size, size, cornerRadius);
+        backgroundBorder.graphics.endFill();
+		
+		backgroundBorder.scale9Grid = new Rectangle( borderSize * 2, borderSize * 2, size - borderSize * 4, size - borderSize * 4 );
+		Reflect.setProperty(backgroundBorder, "noLayout", true);
+		this.addChild( backgroundBorder );
+		
+		size = 100 - borderSize * 2;
+		background.graphics.beginFill(backgroundColor);
+        background.graphics.drawRoundRect(0, 0, size, size, cornerRadius);
         background.graphics.endFill();
-		background.graphics.beginFill(0x000000);
-		background.graphics.drawRect(0, 1, 1, 98);
-        background.graphics.endFill();
-		background.graphics.beginFill(0x000000);
-		background.graphics.drawRect(99, 1, 1, 98);
-        background.graphics.endFill();
-		background.graphics.beginFill(0x000000);
-		background.graphics.drawRect(0, 99, 100, 1);
-        background.graphics.endFill();
-		background.graphics.beginFill(0xCCCCCC);
-        background.graphics.drawRect(1, 1, 98, 98);
-        background.graphics.endFill();
-		background.scale9Grid = new Rectangle( 1, 1, 98, 98 );
+		background.x = background.y = borderSize;
+		background.scale9Grid = new Rectangle( borderSize * 2, borderSize * 2, size - borderSize * 4, size - borderSize * 4 );
 		
 		/*var bitmapData:BitmapData = new BitmapData( Std.int(background.width), Std.int(background.height), true, 0);
 		bitmapData.draw(background);
@@ -216,49 +244,21 @@ class Button extends UIComponent
 		Reflect.setProperty(background, "noLayout", true);
 		this.addChild( background );
 		
-		backgroundOver.graphics.beginFill(0x000000);
-		backgroundOver.graphics.drawRect(0, 0, 100, 1);
+		backgroundOver.graphics.beginFill(backgroundOverColor);
+        backgroundOver.graphics.drawRoundRect(0, 0, size, size, cornerRadius);
         backgroundOver.graphics.endFill();
-		backgroundOver.graphics.beginFill(0x000000);
-		backgroundOver.graphics.drawRect(0, 1, 1, 98);
-        backgroundOver.graphics.endFill();
-		backgroundOver.graphics.beginFill(0x000000);
-		backgroundOver.graphics.drawRect(99, 1, 1, 98);
-        backgroundOver.graphics.endFill();
-		backgroundOver.graphics.beginFill(0x000000);
-		backgroundOver.graphics.drawRect(0, 99, 100, 1);
-        backgroundOver.graphics.endFill();
-		backgroundOver.graphics.beginFill(0x727272);
-        backgroundOver.graphics.drawRect(1, 1, 98, 98);
-        backgroundOver.graphics.endFill();
-		backgroundOver.scale9Grid = new Rectangle( 1, 1, 98, 98 );
+		backgroundOver.x = backgroundOver.y = borderSize;
+		backgroundOver.scale9Grid = new Rectangle( borderSize * 2, borderSize * 2, size - borderSize * 4, size - borderSize * 4 );
 		Reflect.setProperty(backgroundOver, "noLayout", true);
 		backgroundOver.alpha = 0.1;
 		
-		backgroundDown.graphics.beginFill(0x000000);
-		backgroundDown.graphics.drawRect(0, 0, 100, 2);
+		size = 100 - borderSize * 3;
+		backgroundDown.graphics.beginFill(backgroundDownColor);
+        backgroundDown.graphics.drawRoundRect(0, 0, size, size, cornerRadius);
         backgroundDown.graphics.endFill();
-		backgroundDown.graphics.beginFill(0x000000);
-		backgroundDown.graphics.drawRect(0, 2, 2, 96);
-        backgroundDown.graphics.endFill();
-		backgroundDown.graphics.beginFill(0x000000);
-		backgroundDown.graphics.drawRect(98, 2, 2, 96);
-        backgroundDown.graphics.endFill();
-		backgroundDown.graphics.beginFill(0x000000);
-		backgroundDown.graphics.drawRect(0, 98, 100, 2);
-        backgroundDown.graphics.endFill();
-		backgroundDown.graphics.beginFill(0xa3a3a3);
-        backgroundDown.graphics.drawRect(2, 2, 96, 96);
-        backgroundDown.graphics.endFill();
-		backgroundDown.scale9Grid = new Rectangle( 2, 2, 96, 96 );
+		backgroundDown.x = backgroundDown.y = borderSize * 2;
+		backgroundDown.scale9Grid = new Rectangle( borderSize * 2, borderSize * 2, size - borderSize * 4, size - borderSize * 4 );
 		Reflect.setProperty(backgroundDown, "noLayout", true);
-		
-		Reflect.setProperty(labelUI, "noLayout", true);
-		labelUI.y = padding;
-		//this.addChild( labelUI );
-		Reflect.setProperty(image, "noLayout", true);
-		image.y = padding;
-		//this.addChild( image );
 		
 		this.addEventListener( Event.ADDED_TO_STAGE, addedToStageHandler );
 	}
@@ -278,7 +278,7 @@ class Button extends UIComponent
 		removeBackground();
 		state = "downState";
 		this.addChild( backgroundDown );
-		this.setChildIndex( backgroundDown, 0 );
+		this.setChildIndex( backgroundDown, 1 );
 		if( toggle ) _isSelected = ! _isSelected;
 		if( this.getChildIndex( backgroundOver ) != -1 ) this.removeChild( backgroundOver );
 	}
@@ -293,13 +293,13 @@ class Button extends UIComponent
 		else if( this.getChildIndex( backgroundOver ) == -1 )
 		{
 			this.addChild( backgroundOver );
-			this.setChildIndex( backgroundOver, 1 );
+			this.setChildIndex( backgroundOver, 2 );
 		}
 		if( toggle && isSelected ) return;
 		removeBackground();
 		state = "upState";
 		this.addChild( background );
-		this.setChildIndex( background, 0 );
+		this.setChildIndex( background, 1 );
 	}
 	
 	private function rollOverHandler(event:MouseEvent):Void
@@ -308,7 +308,7 @@ class Button extends UIComponent
 		//state = "overState";
 		if( this.getChildIndex( backgroundOver ) != -1 ) return;
 		this.addChild( backgroundOver );
-		this.setChildIndex( backgroundOver, 1 );
+		this.setChildIndex( backgroundOver, 2 );
 	}
 	
 	private function rollOutHandler(event:MouseEvent):Void
@@ -330,11 +330,6 @@ class Button extends UIComponent
 		}
 	}
 	
-	override private function createChildren():Void
-	{		
-		super.createChildren();
-	}
-	
 	override private function updateDisplayList(unscaledWidth:Float, unscaledHeight:Float):Void
 	{
 		createButton();
@@ -343,63 +338,25 @@ class Button extends UIComponent
 	
 	private function createButton():Void
 	{
-		if( this.getChildIndex( labelUI ) != -1 ) this.removeChild( labelUI );
-		if( this.getChildIndex( image ) != -1 ) this.removeChild( image );
-		
-		if( icon == null || ( icon != null && this.label != "" ) )
+		if( labelItemRenderer != null )
 		{
-			labelUI.text = this.label;
-			if( this.textFormat != null ) labelUI.textFormat = this.textFormat;
-			labelUI.text = Math.isNaN( maxWidth ) || icon != null ? this.label : labelUI.truncateLabel(this.label, padding * 2, this.maxWidth);
-			this.addChild( labelUI );
-			labelUI.validate();
+			if( this.getChildIndex( labelItemRenderer ) != -1 ) this.removeChild( labelItemRenderer );
 		}
-		
-		if( icon != null )
+		if( itemRenderer != null )
 		{
-			image.source = icon;
-			this.addChild( image );
-			image.validate();
+			if( this.getChildIndex( itemRenderer ) != -1 ) this.removeChild( itemRenderer );
+			cast(itemRenderer, LabelItemRenderer).init( padding, background, backgroundOver, backgroundDown, backgroundBorder, label, textFormat, icon, minWidth, maxWidth, iconPlacement, borderSize, cornerRadius, backgroundColor, backgroundOverColor, backgroundDownColor, backgroundBorderColor );
+			this.addChild( itemRenderer );
+			itemRenderer.validate();
+			if( ! Reflect.hasField( itemRenderer, "noLayout" ) ) Reflect.setProperty(itemRenderer, "noLayout", true);
 		}
-		
-		if( icon == null )
-		{			
-			labelUI.x = padding;
-			
-			background.width = backgroundOver.width = backgroundDown.width = Math.isNaN( minWidth ) ? labelUI.width + padding * 2 : minWidth;
-			background.height = backgroundOver.height = backgroundDown.height = labelUI.height + padding * 2;
-		}
-		else if( this.label != "" )
+		else
 		{
-			image.height = labelUI.height;
-			image.scaleX = image.scaleY;
-			
-			if( ! Math.isNaN( maxWidth ) )
-			{
-				labelUI.text =  labelUI.truncateLabel(this.label, image.width + padding * 3, this.maxWidth);
-				labelUI.validate();
-			}
-			
-			if( iconPlacement == "left" )
-			{
-				image.x = padding;
-				labelUI.x = image.width + padding;
-			}
-			else
-			{
-				labelUI.x = padding;
-				image.x = labelUI.width + padding;
-			}
-			
-			background.width = backgroundOver.width = backgroundDown.width = Math.isNaN( minWidth ) ? labelUI.width + image.width + padding * 3 : minWidth;
-			background.height = backgroundOver.height = backgroundDown.height = image.height + padding * 2;
-		}
-		else if( this.label == "" )
-		{			
-			image.x = padding;
-			
-			background.width = backgroundOver.width = backgroundDown.width = image.width + padding * 2;
-			background.height = backgroundOver.height = backgroundDown.height = image.height + padding * 2;
+			labelItemRenderer = new LabelItemRenderer();
+			labelItemRenderer.init( padding, background, backgroundOver, backgroundDown, backgroundBorder, label, textFormat, icon, minWidth, maxWidth, iconPlacement, borderSize, cornerRadius, backgroundColor, backgroundOverColor, backgroundDownColor, backgroundBorderColor );
+			this.addChild( labelItemRenderer );
+			labelItemRenderer.validate();
+			if( ! Reflect.hasField( labelItemRenderer, "noLayout" ) ) Reflect.setProperty(labelItemRenderer, "noLayout", true);
 		}
 	}
 	
