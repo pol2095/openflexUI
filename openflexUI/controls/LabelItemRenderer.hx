@@ -103,7 +103,7 @@ class LabelItemRenderer extends UIComponent
 			
 			/*backgroundBorder.width = Math.isNaN( minWidth ) ? labelUI.width + padding * 2 : minWidth;
 			backgroundBorder.height = labelUI.height + padding * 2;*/
-			_drawRoundRect( backgroundBorder, Math.isNaN( minWidth ) ? labelUI.width + padding * 2 : minWidth, labelUI.height + padding * 2, backgroundBorderColor );
+			drawRoundRect( backgroundBorder, Math.isNaN( minWidth ) ? labelUI.width + padding * 2 : minWidth, labelUI.height + padding * 2, backgroundBorderColor );
 		}
 		else if( this.label != "" )
 		{
@@ -112,7 +112,7 @@ class LabelItemRenderer extends UIComponent
 			
 			if( ! Math.isNaN( maxWidth ) )
 			{
-				labelUI.text =  labelUI.truncateLabel(label, image.width + padding * 3, maxWidth);
+				labelUI.text =  labelUI.truncateLabel(label, image.width + padding * 2, maxWidth);
 				labelUI.validate();
 			}
 			
@@ -127,9 +127,9 @@ class LabelItemRenderer extends UIComponent
 				image.x = labelUI.width + padding;
 			}
 			
-			/*backgroundBorder.width = Math.isNaN( minWidth ) ? labelUI.width + image.width + padding * 3 : minWidth;
+			/*backgroundBorder.width = Math.isNaN( minWidth ) ? labelUI.width + image.width + padding * 2 : minWidth;
 			backgroundBorder.height = image.height + padding * 2;*/
-			_drawRoundRect( backgroundBorder, Math.isNaN( minWidth ) ? labelUI.width + image.width + padding * 3 : minWidth, image.height + padding * 2, backgroundBorderColor );
+			drawRoundRect( backgroundBorder, Math.isNaN( minWidth ) ? labelUI.width + image.width + padding * 2 : minWidth, image.height + padding * 2, backgroundBorderColor );
 		}
 		else if( this.label == "" )
 		{			
@@ -137,18 +137,18 @@ class LabelItemRenderer extends UIComponent
 			
 			/*backgroundBorder.width = image.width + padding * 2;
 			backgroundBorder.height = image.height + padding * 2;*/
-			_drawRoundRect( backgroundBorder, image.width + padding * 2, image.height + padding * 2, backgroundBorderColor );
+			drawRoundRect( backgroundBorder, image.width + padding * 2, image.height + padding * 2, backgroundBorderColor );
 		}
 		/*background.width = backgroundOver.width = backgroundBorder.width - borderSize * 2;
 		backgroundDown.width = backgroundBorder.width - borderSize * 4;
 		background.height = backgroundOver.height = backgroundBorder.height - borderSize * 2;
 		backgroundDown.height = backgroundBorder.height - borderSize * 4;*/
-		_drawRoundRect( backgroundOver, backgroundBorder.width - borderSize * 2, backgroundBorder.height - borderSize * 2, backgroundOverColor );
-		_drawRoundRect( background, backgroundBorder.width - borderSize * 2, backgroundBorder.height - borderSize * 2, backgroundColor );
-		_drawRoundRect( backgroundDown, backgroundBorder.width - borderSize * 4, backgroundBorder.height - borderSize * 4, backgroundDownColor );
+		drawRoundRect( backgroundOver, backgroundBorder.width - borderSize * 2, backgroundBorder.height - borderSize * 2, backgroundOverColor );
+		drawRoundRect( background, backgroundBorder.width - borderSize * 2, backgroundBorder.height - borderSize * 2, backgroundColor );
+		drawRoundRect( backgroundDown, backgroundBorder.width - borderSize * 4, backgroundBorder.height - borderSize * 4, backgroundDownColor );
 	}
 	
-	private function _drawRoundRect(sprite:Sprite, width:Float, height:Float, color:Int):Void
+	private function drawRoundRect(sprite:Sprite, width:Float, height:Float, color:Int):Void
 	{
 		sprite.graphics.clear();
 		sprite.graphics.beginFill(color);

@@ -100,6 +100,12 @@ class UIComponent extends Sprite
 					this.removeChild( this.getChildAt(i) );
 				}
 			}
+			if( Reflect.hasField( this.getChildAt(i), "noLayout" ) )
+			{
+				childrens.push( this.getChildAt(i) );
+				childrenPosition.push( this.getChildIndex( this.getChildAt(i) ) );
+				this.removeChild( this.getChildAt(i) );
+			}
 			i--;
 		}
 		childrens.reverse();
@@ -141,6 +147,12 @@ class UIComponent extends Sprite
 					childrenPosition.push( this.getChildIndex( this.getChildAt(i) ) );
 					this.removeChild( this.getChildAt(i) );
 				}
+			}
+			if( Reflect.hasField( this.getChildAt(i), "noLayout" ) )
+			{
+				childrens.push( this.getChildAt(i) );
+				childrenPosition.push( this.getChildIndex( this.getChildAt(i) ) );
+				this.removeChild( this.getChildAt(i) );
 			}
 			i--;
 		}
