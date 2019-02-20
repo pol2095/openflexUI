@@ -71,13 +71,15 @@ class UIComponent extends Sprite
 	private var isEnd:Bool;
 	private var previousContentSize:Rectangle = new Rectangle();
 	
-	override private function get_width()
+	@:dox(hide)
+	override public function get_width()
 	{
 		if( this.mask == null ) return getWidth();
 		return this.mask.width;
 	}
 	
-	override private function get_height()
+	@:dox(hide)
+	override public function get_height()
 	{
 		if( this.mask == null ) return getHeight();
 		return this.mask.height;
@@ -379,15 +381,9 @@ class UIComponent extends Sprite
 	private function measure():Void
 	{
 		//trace("MEASURE");
-		this.dispatchEvent( new FlexEvent( FlexEvent.INITIALIZE ) );
-	}
-	
-	private function updateDisplayList(unscaledWidth:Float, unscaledHeight:Float):Void
-	{
-		//trace("UPDATELIST");
 		var _width:Float = 0;
 		var _height:Float = 0;
-		var previous:Int = 0;
+		var previous:Int = -1;
 		
 		for(i in 0...this.numChildren)
 		{
@@ -398,16 +394,21 @@ class UIComponent extends Sprite
 					cast( this.getChildAt(i), UIComponent ).x = cast( this.getChildAt(i), UIComponent ).y = 0;
 					continue;
 				}
+				if( Std.is( this.layout, VerticalLayout ) )
+				{
+					if( this.layout.horizontalAlign == "contentJustify" || this.layout.horizontalAlign == "justify" ) continue;
+				}
 			}
+			if( Reflect.hasField( this.getChildAt(i), "noLayout" ) ) continue;
 			if( Std.is( this.layout, VerticalLayout ) )
 			{
-				this.getChildAt(i).y = i == 0 ? 0 : this.getChildAt(previous).y + this.getChildAt(previous).height + this.layout.gap;
+				this.getChildAt(i).y = previous == -1 ? 0 : this.getChildAt(previous).y + this.getChildAt(previous).height + this.layout.gap;
 				previous = i;
 				if( this.getChildAt(i).width > _width ) _width = this.getChildAt(i).width;
 			}
 			else if( Std.is( this.layout, HorizontalLayout ) )
 			{
-				this.getChildAt(i).x = i == 0 ? 0 : this.getChildAt(previous).x + this.getChildAt(previous).width + this.layout.gap;
+				this.getChildAt(i).x = previous == -1 ? 0 : this.getChildAt(previous).x + this.getChildAt(previous).width + this.layout.gap;
 				previous = i;
 				if( this.getChildAt(i).height > _height ) _height = this.getChildAt(i).height;
 			}
@@ -418,6 +419,7 @@ class UIComponent extends Sprite
 			{
 				if( ! cast( this.getChildAt(i), UIComponent ).includeInLayout )	continue;
 			}
+			if( Reflect.hasField( this.getChildAt(i), "noLayout" ) ) continue;
 			if( Std.is( this.layout, VerticalLayout ) )
 			{
 				if( this.layout.horizontalAlign == "left" )
@@ -449,6 +451,13 @@ class UIComponent extends Sprite
 				}
 			}
 		}
+		this.dispatchEvent( new FlexEvent( FlexEvent.INITIALIZE ) );
+	}
+	
+	private function updateDisplayList(unscaledWidth:Float, unscaledHeight:Float):Void
+	{
+		//trace("UPDATELIST");
+		this.removeEventListener( Event.EXIT_FRAME, exitFrameHandler );
 		var contentWidth:Float = this.contentWidth;
 		var contentHeight:Float = this.contentHeight;
 		this.visible = true;
@@ -506,6 +515,7 @@ class UIComponent extends Sprite
 		if( event.target == this ) return;
 		//if( Std.is( event.target, UIComponent ) )
 		if( this.getChildIndex( event.target ) == -1 ) return;
+		if( Reflect.hasField( event.target, "noAddedEvent" ) ) return;
 		if( Reflect.hasField( event.target, "noLayout" ) ) return;
 		if( Reflect.hasField( event.target, "isUIComponent" ) )
 		{
@@ -520,6 +530,7 @@ class UIComponent extends Sprite
 		if( event.target == this ) return;
 		//if( Std.is( event.target, UIComponent ) )
 		if( this.getChildIndex( event.target ) == -1 ) return;
+		if( Reflect.hasField( event.target, "noAddedEvent" ) ) return;
 		if( Reflect.hasField( event.target, "noLayout" ) ) return;
 		if( Reflect.hasField( event.target, "isUIComponent" ) )
 		{

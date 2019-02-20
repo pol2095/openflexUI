@@ -12,7 +12,7 @@ package openflexUI.layouts;
 class HorizontalLayout
 {
 	/**
-		 * The vertical alignment of layout elements. Possible values are "top", "middle", or "bottom".
+		 * The vertical alignment of layout elements. Possible values are `top`, `middle`, or `bottom`.
 		 *
 		 * The default value is `top`
 		 */
@@ -23,11 +23,11 @@ class HorizontalLayout
 		 *
 		 * The default value is `0`
 		 */
-	public var gap:Float = 0;
+	public var gap:Float;
 	
 	@:dox(hide)
 	public function new()
 	{
-		//
+		gap = 0;
 	}
 }

@@ -12,9 +12,13 @@ package openflexUI.layouts;
 class VerticalLayout
 {
 	/**
-		 * The horizontal alignment of layout elements. Possible values are "left", "center", or "right".
-		 *
+		 * The horizontal alignment of layout elements. Possible values are `left`, `center`, or `right`.
+		 * 
 		 * The default value is `left`
+		 * 
+		 * For List control possible value are `contentJustify` or `justify`.
+		 *
+		 * The default value is `contentJustify`
 		 */
 	public var horizontalAlign:String = "left";
 	
@@ -23,11 +27,19 @@ class VerticalLayout
 		 *
 		 * The default value is `0`
 		 */
-	public var gap:Float = 0;
+	public var gap:Float;
+	
+	/**
+		 * The measured size of this layout is tall enough to display the first requestedRowCount layout elements.
+		 *
+		 * The default value is `NaN`
+		 */
+	public var requestedRowCount:Float;
 	
 	@:dox(hide)
 	public function new()
 	{
-		//
+		gap = 0;
+		requestedRowCount = Math.NaN;
 	}
 }

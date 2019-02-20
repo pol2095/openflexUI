@@ -41,7 +41,7 @@ class Image extends UIComponent
 	public function new()
 	{
 		super();
-		Reflect.setProperty(bitmap, "noLayout", true);
+		Reflect.setProperty(bitmap, "noAddedEvent", true);
 		this.addChild( bitmap );
 		this.addEventListener( Event.ADDED_TO_STAGE, addedToStageHandler );
 	}
@@ -51,10 +51,12 @@ class Image extends UIComponent
 		this.removeEventListener( Event.ADDED_TO_STAGE, addedToStageHandler );
 	}
 	
-	override private function updateDisplayList(unscaledWidth:Float, unscaledHeight:Float):Void
+	//override private function updateDisplayList(unscaledWidth:Float, unscaledHeight:Float):Void
+	override private function measure():Void
 	{
 		createImage();
-		super.updateDisplayList(unscaledWidth, unscaledHeight);
+		super.measure();
+		//super.updateDisplayList(unscaledWidth, unscaledHeight);
 	}
 	
 	private function createImage():Void

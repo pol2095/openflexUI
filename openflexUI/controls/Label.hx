@@ -60,7 +60,7 @@ class Label extends UIComponent
 	public function new()
 	{
 		super();
-		Reflect.setProperty(textField, "noLayout", true);
+		Reflect.setProperty(textField, "noAddedEvent", true);
 		textField.selectable = false;
 		this.addChild( textField );
 		this.addEventListener( Event.ADDED_TO_STAGE, addedToStageHandler );
@@ -71,10 +71,12 @@ class Label extends UIComponent
 		this.removeEventListener( Event.ADDED_TO_STAGE, addedToStageHandler );
 	}
 	
-	override private function updateDisplayList(unscaledWidth:Float, unscaledHeight:Float):Void
+	//override private function updateDisplayList(unscaledWidth:Float, unscaledHeight:Float):Void
+	override private function measure():Void
 	{
 		createLabel();
-		super.updateDisplayList(unscaledWidth, unscaledHeight);
+		super.measure();
+		//super.updateDisplayList(unscaledWidth, unscaledHeight);
 	}
 	
 	private function createLabel():Void

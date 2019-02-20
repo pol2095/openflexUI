@@ -13,6 +13,7 @@ import openfl.events.MouseEvent;
 import openfl.geom.Rectangle;
 import openfl.text.TextFormat;
 import openflexUI.controls.UIComponent;
+import openflexUI.themes.Theme;
 
 /**
  * The Button component represents a commonly used rectangular button. Button components display a text label.
@@ -41,6 +42,7 @@ class Button extends UIComponent
 	private var backgroundOverColor:Int = 0x727272;
 	private var backgroundDownColor:Int = 0xa3a3a3;
 	private var backgroundBorderColor:Int = 0x000000;
+	private var radio:Bool;
 	
 	private var _label:String = "";
 	/**
@@ -133,45 +135,42 @@ class Button extends UIComponent
 	{
 		if( value == toggle ) return value;
 		_toggle = value;
-		if( isSelected && ! toggle )
+		if( selected && ! toggle )
 		{
 			removeBackground();
 			state = "upState";
-			this.addChild( background );
-			this.setChildIndex( background, 1 );
-			_isSelected = false;
+			this.addChildAt( background, 1 );
+			_selected = false;
 		}
 		return value;
 	}
 	
-	private var _isSelected:Bool;
+	private var _selected:Bool;
 	/**
 		 * Indicates if the button is selected or not.
 		 */
-	public var isSelected(get, set):Bool;
+	public var selected(get, set):Bool;
 	
-	private function get_isSelected()
+	private function get_selected()
 	{
-		return _isSelected;
+		return _selected;
 	}
 	
-	private function set_isSelected(value:Bool)
+	private function set_selected(value:Bool)
 	{
 		if( ! toggle ) return value;
-		if( value == isSelected ) return value;
-		_isSelected = value;
+		if( value == selected ) return value;
+		_selected = value;
 		removeBackground();
-		if( ! isSelected )
+		if( ! selected )
 		{
 			state = "upState";
-			this.addChild( background );
-			this.setChildIndex( background, 1 );
+			this.addChildAt( background, 1 );
 		}
 		else
 		{
 			state = "downState";
-			this.addChild( backgroundDown );
-			this.setChildIndex( backgroundDown, 1 );
+			this.addChildAt( backgroundDown, 1 );
 		}
 		return value;
 	}
@@ -195,24 +194,25 @@ class Button extends UIComponent
 	}
 	
 	@:dox(hide)
-	public function new()
+	public function new(cornerRadius:Int = null, radio:Bool = false)
 	{
 		super();
 		
-		cornerRadius = borderSize * 4;
+		if( cornerRadius == null ) this.cornerRadius = borderSize * 4;
+		this.radio = radio;
 				
 		var size:Float = 100;
 		backgroundBorder.graphics.beginFill(backgroundBorderColor);
-        backgroundBorder.graphics.drawRoundRect(0, 0, size, size, cornerRadius);
+        backgroundBorder.graphics.drawRoundRect(0, 0, size, size, this.cornerRadius);
         backgroundBorder.graphics.endFill();
 		
 		//backgroundBorder.scale9Grid = new Rectangle( borderSize * 2, borderSize * 2, size - borderSize * 4, size - borderSize * 4 );
-		Reflect.setProperty(backgroundBorder, "noLayout", true);
+		Reflect.setProperty(backgroundBorder, "noAddedEvent", true);
 		this.addChild( backgroundBorder );
 		
 		size = 100 - borderSize * 2;
 		background.graphics.beginFill(backgroundColor);
-        background.graphics.drawRoundRect(0, 0, size, size, cornerRadius);
+        background.graphics.drawRoundRect(0, 0, size, size, this.cornerRadius);
         background.graphics.endFill();
 		background.x = background.y = borderSize;
 		//background.scale9Grid = new Rectangle( borderSize * 2, borderSize * 2, size - borderSize * 4, size - borderSize * 4 );
@@ -238,24 +238,24 @@ class Button extends UIComponent
 		}
 		
 		background.scale9Grid = rect;*/
-		Reflect.setProperty(background, "noLayout", true);
+		Reflect.setProperty(background, "noAddedEvent", true);
 		this.addChild( background );
 		
 		backgroundOver.graphics.beginFill(backgroundOverColor);
-        backgroundOver.graphics.drawRoundRect(0, 0, size, size, cornerRadius);
+        backgroundOver.graphics.drawRoundRect(0, 0, size, size, this.cornerRadius);
         backgroundOver.graphics.endFill();
 		backgroundOver.x = backgroundOver.y = borderSize;
 		//backgroundOver.scale9Grid = new Rectangle( borderSize * 2, borderSize * 2, size - borderSize * 4, size - borderSize * 4 );
-		Reflect.setProperty(backgroundOver, "noLayout", true);
+		Reflect.setProperty(backgroundOver, "noAddedEvent", true);
 		backgroundOver.alpha = 0.1;
 		
 		size = 100 - borderSize * 3;
 		backgroundDown.graphics.beginFill(backgroundDownColor);
-        backgroundDown.graphics.drawRoundRect(0, 0, size, size, cornerRadius);
+        backgroundDown.graphics.drawRoundRect(0, 0, size, size, this.cornerRadius);
         backgroundDown.graphics.endFill();
 		backgroundDown.x = backgroundDown.y = borderSize * 2;
 		//backgroundDown.scale9Grid = new Rectangle( borderSize * 2, borderSize * 2, size - borderSize * 4, size - borderSize * 4 );
-		Reflect.setProperty(backgroundDown, "noLayout", true);
+		Reflect.setProperty(backgroundDown, "noAddedEvent", true);
 		
 		this.addEventListener( Event.ADDED_TO_STAGE, addedToStageHandler );
 	}
@@ -274,9 +274,8 @@ class Button extends UIComponent
 	{
 		removeBackground();
 		state = "downState";
-		this.addChild( backgroundDown );
-		this.setChildIndex( backgroundDown, 1 );
-		if( toggle ) _isSelected = ! _isSelected;
+		this.addChildAt( backgroundDown, 1 );
+		if( toggle && ! radio ) _selected = ! _selected;
 		if( this.getChildIndex( backgroundOver ) != -1 ) this.removeChild( backgroundOver );
 	}
 	
@@ -289,14 +288,12 @@ class Button extends UIComponent
 		}
 		else if( this.getChildIndex( backgroundOver ) == -1 )
 		{
-			this.addChild( backgroundOver );
-			this.setChildIndex( backgroundOver, 2 );
+			this.addChildAt( backgroundOver, 2 );
 		}
-		if( toggle && isSelected ) return;
+		if( toggle && selected ) return;
 		removeBackground();
 		state = "upState";
-		this.addChild( background );
-		this.setChildIndex( background, 1 );
+		this.addChildAt( background, 1 );
 	}
 	
 	private function rollOverHandler(event:MouseEvent):Void
@@ -304,8 +301,7 @@ class Button extends UIComponent
 		//removeBackground();
 		//state = "overState";
 		if( this.getChildIndex( backgroundOver ) != -1 ) return;
-		this.addChild( backgroundOver );
-		this.setChildIndex( backgroundOver, 2 );
+		this.addChildAt( backgroundOver, 2 );
 	}
 	
 	private function rollOutHandler(event:MouseEvent):Void
@@ -327,10 +323,21 @@ class Button extends UIComponent
 		}
 	}
 	
-	override private function updateDisplayList(unscaledWidth:Float, unscaledHeight:Float):Void
+	override private function style():Void
+	{
+		super.style();
+		if( Theme.chromeColor != null ) backgroundColor = Theme.chromeColor;
+		if( Theme.overColor != null ) backgroundOverColor = Theme.overColor;
+		if( Theme.downColor != null ) backgroundDownColor = Theme.downColor;
+		if( Theme.borderColor != null ) backgroundBorderColor = Theme.borderColor;
+	}
+	
+	//override private function updateDisplayList(unscaledWidth:Float, unscaledHeight:Float):Void
+	override private function measure():Void
 	{
 		createButton();
-		super.updateDisplayList(unscaledWidth, unscaledHeight);
+		super.measure();
+		//super.updateDisplayList(unscaledWidth, unscaledHeight);
 	}
 	
 	private function createButton():Void
@@ -343,17 +350,17 @@ class Button extends UIComponent
 		{
 			if( this.getChildIndex( itemRenderer ) != -1 ) this.removeChild( itemRenderer );
 			cast(itemRenderer, LabelItemRenderer).init( padding, background, backgroundOver, backgroundDown, backgroundBorder, label, textFormat, icon, minWidth, maxWidth, iconPlacement, borderSize, cornerRadius, backgroundColor, backgroundOverColor, backgroundDownColor, backgroundBorderColor );
+			if( ! Reflect.hasField( itemRenderer, "noAddedEvent" ) ) Reflect.setProperty(itemRenderer, "noAddedEvent", true);
 			this.addChild( itemRenderer );
 			itemRenderer.validate();
-			if( ! Reflect.hasField( itemRenderer, "noLayout" ) ) Reflect.setProperty(itemRenderer, "noLayout", true);
 		}
 		else
 		{
 			labelItemRenderer = new LabelItemRenderer();
 			labelItemRenderer.init( padding, background, backgroundOver, backgroundDown, backgroundBorder, label, textFormat, icon, minWidth, maxWidth, iconPlacement, borderSize, cornerRadius, backgroundColor, backgroundOverColor, backgroundDownColor, backgroundBorderColor );
+			if( ! Reflect.hasField( labelItemRenderer, "noAddedEvent" ) ) Reflect.setProperty(labelItemRenderer, "noAddedEvent", true);
 			this.addChild( labelItemRenderer );
 			labelItemRenderer.validate();
-			if( ! Reflect.hasField( labelItemRenderer, "noLayout" ) ) Reflect.setProperty(labelItemRenderer, "noLayout", true);
 		}
 	}
 	

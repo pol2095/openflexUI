@@ -9,7 +9,6 @@ package openflexUI.controls;
 import openfl.display.BitmapData;
 import openfl.display.Sprite;
 import openfl.events.Event;
-import openfl.events.MouseEvent;
 import openfl.geom.Rectangle;
 import openfl.text.TextFormat;
 import openflexUI.controls.UIComponent;
@@ -43,8 +42,8 @@ class LabelItemRenderer extends UIComponent
 	{
 		super();
 		
-		Reflect.setProperty(labelUI, "noLayout", true);
-		Reflect.setProperty(image, "noLayout", true);
+		Reflect.setProperty(labelUI, "noAddedEvent", true);
+		Reflect.setProperty(image, "noAddedEvent", true);
 	}
 	
 	@:dox(hide)
@@ -70,10 +69,12 @@ class LabelItemRenderer extends UIComponent
 		this.backgroundBorderColor = backgroundBorderColor;
 	}
 	
-	override private function updateDisplayList(unscaledWidth:Float, unscaledHeight:Float):Void
+	//override private function updateDisplayList(unscaledWidth:Float, unscaledHeight:Float):Void
+	override private function measure():Void
 	{
 		createLabel();
-		super.updateDisplayList(unscaledWidth, unscaledHeight);
+		super.measure();
+		//super.updateDisplayList(unscaledWidth, unscaledHeight);
 	}
 	
 	private function createLabel():Void

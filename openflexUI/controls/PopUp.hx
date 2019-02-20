@@ -80,8 +80,7 @@ class PopUp extends Sprite
 		}
 		else
 		{
-			this.addChild(background);
-			this.setChildIndex( background, 0 );
+			this.addChildAt(background, 0);
 		}
 		return _isModal;
 	}
