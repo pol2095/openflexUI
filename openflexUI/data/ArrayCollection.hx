@@ -27,17 +27,37 @@ class ArrayCollection extends EventDispatcher
 	
 	private function get_length()
 	{
-		if( source == null ) return 0;
+		//if( source == null ) return 0;
 		return source.length;
 	}
 		
-	@:dox(hide)
+	/**
+		 * Creates a new DataProvider object using a list as the data source.
+		 *  
+		 * @param source The data source for this collection.
+	**/
 	//public function new(source:Array<{label:String, icon:BitmapData}> = null)
 	public function new(source:Array<Dynamic> = null)
 	{
 		super();
 		
 		this.source = source;
+	}
+	
+	@:dox(hide)
+	public function init():Void
+	{
+		var source:Array<Dynamic> = this.source;
+		if( source == null )
+		{
+			this.source = [];
+			return;
+		}
+		this.removeAll();
+		for(i in 0...source.length)
+		{
+			this.addItem( source[i] );
+		}
 	}
 	
 	//public function addItemAt(item:{label:String, icon:BitmapData}, index:Int):Void
@@ -69,8 +89,7 @@ class ArrayCollection extends EventDispatcher
 	public function removeAll():Void
 	{
 		this.dispatchEvent( new ArrayCollectionEvent( ArrayCollectionEvent.REMOVE_ALL, null, null ) );
-		if( source != null ) source = [];
-		trace(source);
+		source = [];
 	}
 	
 	//public function getItemAt(index:Int):{label:String, icon:BitmapData}

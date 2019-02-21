@@ -64,6 +64,7 @@ class List extends UIComponent
 		dataProvider.addEventListener( ArrayCollectionEvent.REMOVED, onArrayCollectionRemovedHandler );
 		dataProvider.addEventListener( ArrayCollectionEvent.REMOVE_ALL, onArrayCollectionRemoveAllHandler );
 		dataProvider.addEventListener( ArrayCollectionEvent.REPLACE, onArrayCollectionReplaceHandler );
+		_dataProvider.init();
 		createChildren();
 		return value;
 	}
