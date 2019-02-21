@@ -460,7 +460,7 @@ class UIComponent extends Sprite
 		this.removeEventListener( Event.EXIT_FRAME, exitFrameHandler );
 		var contentWidth:Float = this.contentWidth;
 		var contentHeight:Float = this.contentHeight;
-		this.visible = true;
+		//this.visible = true;
 		this.dispatchEvent( new FlexEvent( FlexEvent.COMPONENT_COMPLETE ) );
 		isEnd = true;
 		checkIsEnd( this );
@@ -474,6 +474,7 @@ class UIComponent extends Sprite
 		{
 			this.dispatchEvent( new Event( Event.RESIZE ) );
 		}
+		this.visible = true;
 		previousContentSize = new Rectangle( 0, 0, contentWidth, contentHeight );
 		//this.removeEventListener( FlexEvent.COMPONENT_COMPLETE, creationCompleteHandler );
 		
@@ -554,7 +555,9 @@ class UIComponent extends Sprite
 	
 	private function creationCompleteHandler(event:FlexEvent):Void
 	{
-		cast( event.currentTarget, UIComponent ).removeEventListener( FlexEvent.COMPONENT_COMPLETE, creationCompleteHandler );
+		isEnd = true;
+		checkIsEnd( cast( event.currentTarget, UIComponent ) );
+		if( isEnd ) cast( event.currentTarget, UIComponent ).removeEventListener( FlexEvent.COMPONENT_COMPLETE, creationCompleteHandler );
 		if( ! isValidate ) this.addEventListener( Event.EXIT_FRAME, exitFrameHandler );
 		/*invalidateProperties();
 		invalidateSize();
