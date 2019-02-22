@@ -83,9 +83,12 @@ class UIComponent extends SpriteUI
 		if( this.mask == null ) return getHeight();
 		return this.mask.height;
 	}
+	
+	private var _getWidth:Float = -1;
 		
 	private function getWidth():Float
 	{
+		if( _getWidth != -1 ) return _getWidth;
 		var width:Float = 0;
 		var childrens:Array<DisplayObject> = [];
 		var childrenPosition:Array<Int> = [];
@@ -114,6 +117,7 @@ class UIComponent extends SpriteUI
 		
 		//width = super.width;
 		width = measureSize( this ).width;
+		if( ! isCreating ) _getWidth = width;
 		
 		for(i in 0...childrens.length)
 		{
@@ -131,9 +135,12 @@ class UIComponent extends SpriteUI
 	{
 		return getWidth();
 	}
+	
+	private var _getHeight:Float = -1;
 		
 	private function getHeight():Float
 	{
+		if( _getHeight != -1 ) return _getHeight;
 		var height:Float = 0;
 		var childrens:Array<DisplayObject> = [];
 		var childrenPosition:Array<Int> = [];
@@ -162,6 +169,7 @@ class UIComponent extends SpriteUI
 		
 		//height = super.height;
 		height = measureSize( this ).height;
+		if( ! isCreating ) _getHeight = height;
 		
 		for(i in 0...childrens.length)
 		{
@@ -332,6 +340,7 @@ class UIComponent extends SpriteUI
 	private function createChildren():Void
 	{
 		//trace("CREATE CHILDREN");
+		_getWidth = _getHeight = -1;
 		if( ! isCreating )
 		{
 			this.addEventListener( Event.ENTER_FRAME, enterFrameCreationHandler );
