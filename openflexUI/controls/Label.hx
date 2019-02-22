@@ -8,7 +8,7 @@ package openflexUI.controls;
 
 import openfl.display.Sprite;
 import openfl.events.Event;
-import openfl.text.TextField;
+//import openfl.text.TextField;
 import openfl.text.TextFormat;
 import openfl.text.TextFieldAutoSize;
 import openflexUI.controls.UIComponent;
@@ -18,7 +18,7 @@ import openflexUI.controls.UIComponent;
  */
 class Label extends UIComponent
 {	
-	private var textField:TextField = new TextField();
+	private var textField:TextFieldUI = new TextFieldUI();
 	
 	private var _text:String = "";
 	/**
@@ -26,7 +26,7 @@ class Label extends UIComponent
 		 */
 	public var text(get, set):String;
 	
-	private function get_text()
+	private function get_text():String
 	{
 		return _text;
 	}
@@ -44,7 +44,7 @@ class Label extends UIComponent
 		 */
 	public var textFormat(get, set):TextFormat;
 	
-	private function get_textFormat()
+	private function get_textFormat():TextFormat
 	{
 		return _textFormat;
 	}
@@ -60,7 +60,7 @@ class Label extends UIComponent
 	public function new()
 	{
 		super();
-		Reflect.setProperty(textField, "noAddedEvent", true);
+		textField.noAddedEvent = true;
 		textField.selectable = false;
 		this.addChild( textField );
 		this.addEventListener( Event.ADDED_TO_STAGE, addedToStageHandler );
@@ -90,7 +90,7 @@ class Label extends UIComponent
 	public function truncateLabel(text:String, padding:Float = 0, maxWidth:Float = null):String
 	{
 		if( maxWidth == null ) maxWidth = this.maxWidth;
-		var textField:TextField = new TextField();
+		var textField:TextFieldUI = new TextFieldUI();
 		if( this.textFormat != null ) textField.defaultTextFormat = this.textFormat;
 		textField.text = text;
 		textField.autoSize = TextFieldAutoSize.LEFT;

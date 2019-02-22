@@ -24,26 +24,26 @@ import openflexUI.themes.Theme;
 class List extends UIComponent
 {	
 	private var scroller:Scroller = new Scroller();
-	private var background:Sprite = new Sprite();
+	private var background:SpriteUI = new SpriteUI();
 	private var backgroundColor:Int = 0xEEEEEE;
 	
 	private var _width:Float = Math.NaN;
 	
-	override private function set_width(value:Float)
+	#if flash @:setter(width) public #else override public #end function set_width(value:Float)
 	{
 		_width = value;
 		scroller.width = _width;
-		return value;
+		#if !flash return value; #end
 	}
 	
 	private var _height:Float = Math.NaN;
 	
-	override private function set_height(value:Float)
+	#if flash @:setter(height) public #else override public #end function set_height(value:Float)
 	{
 		_height = value;
 		scroller.height = _height;
 		createChildren();
-		return value;
+		#if !flash return value; #end
 	}
 	
 	private var _dataProvider:ArrayCollection;
@@ -52,7 +52,7 @@ class List extends UIComponent
 		 */
 	public var dataProvider(get, set):ArrayCollection;
 	
-	private function get_dataProvider()
+	private function get_dataProvider():ArrayCollection
 	{
 		return _dataProvider;
 	}
@@ -74,7 +74,7 @@ class List extends UIComponent
 		 */
 	public var selectedIndex(get, set):Int;
 	
-	private function get_selectedIndex()
+	private function get_selectedIndex():Int
 	{
 		var selectedIndex:Int = -1;
 		for(i in 0...dataProvider.length)
@@ -101,7 +101,7 @@ class List extends UIComponent
 		 */
 	public var itemRenderer(get, set):UIComponent;
 	
-	private function get_itemRenderer()
+	private function get_itemRenderer():UIComponent
 	{
 		return _itemRenderer;
 	}
@@ -120,8 +120,8 @@ class List extends UIComponent
 		
 		/*background.graphics.beginFill(backgroundColor);
 		background.graphics.drawRect(0, 0, 300, 300);
-		background.graphics.endFill();
-		Reflect.setProperty(background, "noAddedEvent", true);*/
+		background.graphics.endFill();*/
+		background.noAddedEvent = true;
 		this.addChild( background );
 		
 		var verticalLayout:VerticalLayout = new VerticalLayout();
@@ -141,7 +141,7 @@ class List extends UIComponent
 	override private function style():Void
 	{
 		super.style();
-		if( Theme.backgroundColor != null ) backgroundColor = Theme.backgroundColor;
+		if( Theme.backgroundColor != -1 ) backgroundColor = Theme.backgroundColor;
 	}
 	
 	override private function measure():Void
@@ -152,6 +152,7 @@ class List extends UIComponent
 	
 	private function createBackground():Void
 	{
+		trace("bnj");
 		background.graphics.clear();
 		background.graphics.beginFill(backgroundColor);
 		if( this.numChildren == 1 )
@@ -239,14 +240,16 @@ class List extends UIComponent
 	private function contentJustify():Void
 	{
 		var maxSize:Float = 0;
-		for(i in 0...dataProvider.length + 1)
+		for(i in 0...scroller.numChildren)
 		{
-			var item:Button = cast( scroller.getChildAt( i + 1 ), Button );
+			if( ! Std.is( scroller.getChildAt( i ), Button ) ) continue;
+			var item:Button = cast( scroller.getChildAt( i ), Button );
 			if( item.width > maxSize ) maxSize = item.width;
 		}
-		for(i in 0...dataProvider.length + 1)
+		for(i in 0...scroller.numChildren)
 		{
-			var item:Button = cast( scroller.getChildAt( i + 1 ), Button );
+			if( ! Std.is( scroller.getChildAt( i ), Button ) ) continue;
+			var item:Button = cast( scroller.getChildAt( i ), Button );
 			if( item.width != maxSize )
 			{
 				item.minWidth = item.maxWidth = maxSize;
@@ -258,12 +261,17 @@ class List extends UIComponent
 	private function justify():Void
 	{
 		var contentHeight:Float = 0;
-		for(i in 0...dataProvider.length + 1) contentHeight += scroller.getChildAt( i + 1 ).height;
+		for(i in 0...scroller.numChildren)
+		{
+			if( ! Std.is( scroller.getChildAt( i ), Button ) ) continue;
+			contentHeight += scroller.getChildAt( i ).height;
+		}
 		
 		var width:Float = contentHeight <= this._height ? this._width : this._width - scroller.scrollerSize;
-		for(i in 0...dataProvider.length + 1)
+		for(i in 0...scroller.numChildren)
 		{
-			var item:Button = cast( scroller.getChildAt( i + 1 ), Button );
+			if( ! Std.is( scroller.getChildAt( i ), Button ) ) continue;
+			var item:Button = cast( scroller.getChildAt( i ), Button );
 			if( item.width != width )
 			{
 				item.minWidth = item.maxWidth = width;

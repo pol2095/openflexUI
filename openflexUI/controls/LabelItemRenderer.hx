@@ -42,8 +42,8 @@ class LabelItemRenderer extends UIComponent
 	{
 		super();
 		
-		Reflect.setProperty(labelUI, "noAddedEvent", true);
-		Reflect.setProperty(image, "noAddedEvent", true);
+		labelUI.noAddedEvent = true;
+		image.noAddedEvent = true;
 	}
 	
 	@:dox(hide)

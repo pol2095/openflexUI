@@ -25,7 +25,7 @@ class PopUp extends Sprite
 		 */
 	public var isOpen(get, never):Bool;
 	
-	private function get_isOpen()
+	private function get_isOpen():Bool
 	{
 		return _isOpen;
 	}
@@ -44,7 +44,7 @@ class PopUp extends Sprite
 		 */
 	public var isCentered(get, set):Bool;
 	
-	private function get_isCentered()
+	private function get_isCentered():Bool
 	{
 		return _isCentered;
 	}
@@ -64,7 +64,7 @@ class PopUp extends Sprite
 		 */
 	public var isModal(get, set):Bool;
 	
-	private function get_isModal()
+	private function get_isModal():Bool
 	{
 		return _isModal;
 	}
@@ -129,7 +129,7 @@ class PopUp extends Sprite
 			container = new UIComponent();
 			container.addChild(popUp);
 			this.addChild(container);
-			if( Reflect.hasField( popUp, "isUIComponent" ) )
+			if( Std.is( popUp, UIComponent ) )
 			{
 				this.popUp = cast( popUp, UIComponent );
 				if( ! cast( popUp, UIComponent ).isCreated )

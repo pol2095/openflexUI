@@ -20,7 +20,7 @@ import openflexUI.themes.Theme;
  */
 class Scroller extends UIComponent
 {
-	private var maskVP:Sprite = new Sprite();
+	private var maskVP:SpriteUI = new SpriteUI();
 	
 	private var _horizontalScrollPolicy:String = "auto";
 	/**
@@ -30,7 +30,7 @@ class Scroller extends UIComponent
 		 */
 	public var horizontalScrollPolicy(get, set):String;
 	
-	private function get_horizontalScrollPolicy()
+	private function get_horizontalScrollPolicy():String
 	{
 		return _horizontalScrollPolicy;
 	}
@@ -50,7 +50,7 @@ class Scroller extends UIComponent
 		 */
 	public var verticalScrollPolicy(get, set):String;
 	
-	private function get_verticalScrollPolicy()
+	private function get_verticalScrollPolicy():String
 	{
 		return _verticalScrollPolicy;
 	}
@@ -62,12 +62,12 @@ class Scroller extends UIComponent
 		return value;
 	}
 	
-	public var horizontalScrollBar:Sprite;
+	public var horizontalScrollBar:SpriteUI;
 	private var horizontalScrollBarBG:Sprite = new Sprite();
 	private var horizontalScrollBarLeft:Sprite = new Sprite();
 	private var horizontalScrollBarCursor:Sprite = new Sprite();
 	private var horizontalScrollBarRight:Sprite = new Sprite();
-	public var verticalScrollBar:Sprite;
+	public var verticalScrollBar:SpriteUI;
 	private var verticalScrollBarBG:Sprite = new Sprite();
 	private var verticalScrollBarUp:Sprite = new Sprite();
 	private var verticalScrollBarCursor:Sprite = new Sprite();
@@ -96,72 +96,74 @@ class Scroller extends UIComponent
 	
 	private var Width(get, never):Float;
 	
-	private function get_Width()
+	private function get_Width():Float
 	{
 		if( Math.isNaN( _width ) ) return getWidth();
 		return _width;
 	}
 	
-	/*override private function get_width()
+	/*override private function get_width():Float
 	{
 		return viewPort.width;
 	}*/
 	
 	@:dox(hide)
-	override public function set_width(value:Float)
+	#if flash @:setter(width) public #else override public #end function set_width(value:Float)
 	{
 		_width = value;
 		createChildren();
-		return value;
+		#if !flash return value; #end
 	}
 	
 	private var _height:Float = Math.NaN;
 	
 	private var Height(get, never):Float;
 	
-	private function get_Height()
+	private function get_Height():Float
 	{
 		if( Math.isNaN( _height ) ) return getHeight();
 		return _height;
 	}
 	
-	/*override private function get_height()
+	/*override private function get_height():Float
 	{
 		return viewPort.height;
 	}*/
 	
 	@:dox(hide)
-	override public function set_height(value:Float)
+	#if flash @:setter(height) public #else override public #end function set_height(value:Float)
 	{
 		_height = value;
 		createChildren();
-		return value;
+		#if !flash return value; #end
 	}
 	
 	private var _x:Float = 0;
 	
-	override private function get_x()
+	#if flash @:getter(x) public #else override public #end function get_x():Float
 	{
 		return _x;
 	}
 	
-	override private function set_x(value:Float)
+	#if flash @:setter(x) public #else override public #end function set_x(value:Float)
 	{
 		_x = value;
-		return super.x = value - pivotX;
+		super.x = value - pivotX;
+		#if !flash return value; #end
 	}
 	
 	private var _y:Float = 0;
 	
-	override private function get_y()
+	#if flash @:getter(y) public #else override public #end function get_y():Float
 	{
 		return _y;
 	}
 	
-	override private function set_y(value:Float)
+	#if flash @:setter(y) public #else override public #end function set_y(value:Float)
 	{
 		_y = value;
-		return super.y = value - pivotY;
+		super.y = value - pivotY;
+		#if !flash return value; #end
 	}
 	
 	private var _pivotX:Float = 0;
@@ -170,7 +172,7 @@ class Scroller extends UIComponent
 		 */
 	public var pivotX(get, set):Float;
 	
-	private function get_pivotX()
+	private function get_pivotX():Float
 	{
 		return _pivotX;
 	}
@@ -178,7 +180,8 @@ class Scroller extends UIComponent
 	private function set_pivotX(value:Float)
 	{
 		_pivotX = value;
-		return this.x = this.x;
+		var x:Float = this.x;
+		return this.x = x;
 	}
 	
 	private var _pivotY:Float = 0;
@@ -187,7 +190,7 @@ class Scroller extends UIComponent
 		 */
 	public var pivotY(get, set):Float;
 	
-	private function get_pivotY()
+	private function get_pivotY():Float
 	{
 		return _pivotY;
 	}
@@ -195,7 +198,8 @@ class Scroller extends UIComponent
 	private function set_pivotY(value:Float)
 	{
 		_pivotY = value;
-		return this.y = this.y;
+		var y:Float = this.y;
+		return this.y = y;
 	}
 	
 	/**
@@ -203,7 +207,7 @@ class Scroller extends UIComponent
 		 */
 	public var maxHorizontalScrollPosition(get, never):Float;
 	
-	private function get_maxHorizontalScrollPosition()
+	private function get_maxHorizontalScrollPosition():Float
 	{
 		var width:Float = viewPort.width;
 		var contentWidth:Float = this.contentWidth;
@@ -218,7 +222,7 @@ class Scroller extends UIComponent
 		 */
 	public var maxVerticalScrollPosition(get, never):Float;
 	
-	private function get_maxVerticalScrollPosition()
+	private function get_maxVerticalScrollPosition():Float
 	{
 		var height:Float = viewPort.height;
 		var contentHeight:Float = this.contentHeight;
@@ -233,7 +237,7 @@ class Scroller extends UIComponent
 		 */
 	public var horizontalScrollPosition(get, set):Float;
 	
-	private function get_horizontalScrollPosition()
+	private function get_horizontalScrollPosition():Float
 	{
 		var contentWidth:Float = this.contentWidth;
 		var contentWidthSB:Float = horizontalScrollBarRight.x - scrollerSize - gap * 2;
@@ -244,7 +248,7 @@ class Scroller extends UIComponent
 	
 	private function set_horizontalScrollPosition(x:Float)
 	{
-		if( ! horizontalScrollBar.visible ) return null;
+		if( ! horizontalScrollBar.visible ) return x;
 		var contentWidth:Float = this.contentWidth;
 		var contentWidthSB:Float = horizontalScrollBarRight.x - scrollerSize - gap * 2;
 		x *= contentWidthSB / contentWidth;
@@ -252,7 +256,7 @@ class Scroller extends UIComponent
 		if( x > maxHorizontalScrollPosition ) x = maxHorizontalScrollPosition;
 		horizontalScrollBarCursor.x = scrollerSize + gap + x;
 		horizontalScrollBarCursorClickHandler();
-		return null;
+		return x;
 	}
 	
 	/**
@@ -260,7 +264,7 @@ class Scroller extends UIComponent
 		 */
 	public var verticalScrollPosition(get, set):Float;
 	
-	private function get_verticalScrollPosition()
+	private function get_verticalScrollPosition():Float
 	{
 		var contentHeight:Float = this.contentHeight;
 		var contentHeightSB:Float = verticalScrollBarDown.y - scrollerSize - gap * 2;
@@ -271,7 +275,7 @@ class Scroller extends UIComponent
 	
 	private function set_verticalScrollPosition(y:Float)
 	{
-		if( ! verticalScrollBar.visible ) return null;
+		if( ! verticalScrollBar.visible ) return y;
 		var contentHeight:Float = this.contentHeight;
 		var contentHeightSB:Float = verticalScrollBarDown.y - scrollerSize - gap * 2;
 		y *= contentHeightSB / contentHeight;
@@ -279,19 +283,19 @@ class Scroller extends UIComponent
 		if( y > maxVerticalScrollPosition ) y = maxVerticalScrollPosition;
 		verticalScrollBarCursor.y = scrollerSize + gap + y;
 		verticalScrollBarCursorClickHandler();
-		return null;
+		return y;
 	}
 		
 	private var horizontalScrollBarHeight(get, never):Float;
 	
-	private function get_horizontalScrollBarHeight()
+	private function get_horizontalScrollBarHeight():Float
 	{
 		return horizontalScrollBar.visible ? scrollerSize : 0;
 	}
 	
 	private var verticalScrollBarWidth(get, never):Float;
 	
-	private function get_verticalScrollBarWidth()
+	private function get_verticalScrollBarWidth():Float
 	{
 		return verticalScrollBar.visible ? scrollerSize : 0;
 	}
@@ -303,7 +307,7 @@ class Scroller extends UIComponent
 		 */
 	public var viewPort(get, never):Rectangle;
 	
-	private function get_viewPort()
+	private function get_viewPort():Rectangle
 	{
 		if( horizontalScrollBar == null ) return new Rectangle();
 		return new Rectangle( maskVP.x, maskVP.y, maskVP.width - verticalScrollBarWidth, maskVP.height - horizontalScrollBarHeight );
@@ -317,7 +321,7 @@ class Scroller extends UIComponent
 		maskVP.graphics.beginFill(0x000000);
         maskVP.graphics.drawRect(0, 0, 0, 0);
         maskVP.graphics.endFill();
-		Reflect.setProperty(maskVP, "noLayout", true);
+		maskVP.noLayout = true;
 		this.addChild( maskVP );
 		previousViewPort = new Rectangle();
 		this.mask = maskVP;
@@ -333,9 +337,9 @@ class Scroller extends UIComponent
 	override private function style():Void
 	{
 		super.style();
-		if( Theme.scrollBarColor != null ) scrollBarColor = Theme.scrollBarColor;
-		if( Theme.iconColor != null ) iconColor = Theme.iconColor;
-		if( Theme.backgroundColor != null ) backgroundSBColor = Theme.backgroundColor;
+		if( Theme.scrollBarColor != -1 ) scrollBarColor = Theme.scrollBarColor;
+		if( Theme.iconColor != -1 ) iconColor = Theme.iconColor;
+		if( Theme.backgroundColor != -1 ) backgroundSBColor = Theme.backgroundColor;
 	}
 	
 	//override private function updateDisplayList(unscaledWidth:Float, unscaledHeight:Float):Void
@@ -462,9 +466,8 @@ class Scroller extends UIComponent
 	
 	private function createHorizontalScrollBar():Void
 	{
-		horizontalScrollBar = new Sprite();
-		Reflect.setProperty(horizontalScrollBar, "noLayout", true);
-		this.addChild( horizontalScrollBar );
+		horizontalScrollBar = new SpriteUI();
+		horizontalScrollBar.noLayout = true;
 		
 		horizontalScrollBarBG.graphics.beginFill(backgroundSBColor);
         horizontalScrollBarBG.graphics.drawRect(0, 0, 40, scrollerSize);
@@ -501,13 +504,14 @@ class Scroller extends UIComponent
 		horizontalScrollBarRight.graphics.endFill();
 		horizontalScrollBarRight.addEventListener( MouseEvent.MOUSE_DOWN, horizontalScrollBarRightMouseDownHandler );
 		horizontalScrollBar.addChild( horizontalScrollBarRight );
+		
+		this.addChild( horizontalScrollBar );
 	}
 	
 	private function createVerticalScrollBar():Void
 	{
-		verticalScrollBar = new Sprite();
-		Reflect.setProperty(verticalScrollBar, "noLayout", true);
-		this.addChild( verticalScrollBar );
+		verticalScrollBar = new SpriteUI();
+		verticalScrollBar.noLayout = true;
 		
 		verticalScrollBarBG.graphics.beginFill(backgroundSBColor);
         verticalScrollBarBG.graphics.drawRect(0, 0, scrollerSize, 40);
@@ -544,6 +548,8 @@ class Scroller extends UIComponent
 		verticalScrollBarDown.graphics.endFill();
 		verticalScrollBarDown.addEventListener( MouseEvent.MOUSE_DOWN, verticalScrollBarDownMouseDownHandler );
 		verticalScrollBar.addChild( verticalScrollBarDown );
+		
+		this.addChild( verticalScrollBar );
 	}
 		
 	private function horizontalScrollBarLeftMouseDownHandler(event:MouseEvent):Void
@@ -560,7 +566,7 @@ class Scroller extends UIComponent
 		stage.removeEventListener(MouseEvent.MOUSE_UP, horizontalScrollBarLeftMouseUpHandler);
 	}
 	
-	private function horizontalScrollBarLeftClickHandler(event:MouseEvent):Void
+	private function horizontalScrollBarLeftClickHandler(event:Event):Void
 	{
 		var width:Float = viewPort.width;
 		var contentWidth:Float = this.contentWidth;
@@ -586,7 +592,7 @@ class Scroller extends UIComponent
 		stage.removeEventListener(MouseEvent.MOUSE_UP, horizontalScrollBarRightMouseUpHandler);
 	}
 	
-	private function horizontalScrollBarRightClickHandler(event:MouseEvent):Void
+	private function horizontalScrollBarRightClickHandler(event:Event):Void
 	{
 		var width:Float = viewPort.width;
 		var contentWidth:Float = this.contentWidth;
@@ -612,7 +618,7 @@ class Scroller extends UIComponent
 		stage.removeEventListener(MouseEvent.MOUSE_UP, verticalScrollBarUpMouseUpHandler);
 	}
 	
-	private function verticalScrollBarUpClickHandler(event:MouseEvent):Void
+	private function verticalScrollBarUpClickHandler(event:Event):Void
 	{
 		var height:Float = viewPort.height;
 		var contentHeight:Float = this.contentHeight;
@@ -638,7 +644,7 @@ class Scroller extends UIComponent
 		stage.removeEventListener(MouseEvent.MOUSE_UP, verticalScrollBarDownMouseUpHandler);
 	}
 	
-	private function verticalScrollBarDownClickHandler(event:MouseEvent):Void
+	private function verticalScrollBarDownClickHandler(event:Event):Void
 	{
 		var height:Float = viewPort.height;
 		var contentHeight:Float = this.contentHeight;

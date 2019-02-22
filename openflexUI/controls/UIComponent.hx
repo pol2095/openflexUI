@@ -8,7 +8,7 @@ package openflexUI.controls;
 
 import openfl.display.DisplayObject;
 import openfl.display.DisplayObjectContainer;
-import openfl.display.Sprite;
+//import openfl.display.Sprite;
 import openfl.events.Event;
 import openfl.geom.Point;
 import openfl.geom.Rectangle;
@@ -19,10 +19,9 @@ import openflexUI.layouts.VerticalLayout;
 /**
  * The UIComponent class is the base class for all visual components, both interactive and noninteractive.
  */
-class UIComponent extends Sprite
+class UIComponent extends SpriteUI
 {
 	private var isCreating:Bool;
-	private var isValidate:Bool;
 	/**
 		 * Determines if the component has been initialized and validated for the first time.
 		 */
@@ -34,7 +33,7 @@ class UIComponent extends Sprite
 		 */
 	public var layout(get, set):Dynamic;
 	
-	private function get_layout()
+	private function get_layout():Dynamic
 	{
 		return _layout;
 	}
@@ -56,7 +55,7 @@ class UIComponent extends Sprite
 		 */
 	public var includeInLayout(get, set):Bool;
 	
-	private function get_includeInLayout()
+	private function get_includeInLayout():Bool
 	{
 		return _includeInLayout;
 	}
@@ -72,14 +71,14 @@ class UIComponent extends Sprite
 	private var previousContentSize:Rectangle = new Rectangle();
 	
 	@:dox(hide)
-	override public function get_width()
+	#if flash @:getter(width) public #else override public #end function get_width():Float
 	{
 		if( this.mask == null ) return getWidth();
 		return this.mask.width;
 	}
 	
 	@:dox(hide)
-	override public function get_height()
+	#if flash @:getter(height) public #else override public #end function get_height():Float
 	{
 		if( this.mask == null ) return getHeight();
 		return this.mask.height;
@@ -93,7 +92,7 @@ class UIComponent extends Sprite
 		var i:Int = this.numChildren - 1;
 		while(i >= 0)
 		{
-			if( Reflect.hasField( this.getChildAt(i), "isUIComponent" ) )
+			if( Std.is( this.getChildAt(i), UIComponent ) )
 			{
 				if( ! cast( this.getChildAt(i), UIComponent ).includeInLayout )
 				{
@@ -102,7 +101,7 @@ class UIComponent extends Sprite
 					this.removeChild( this.getChildAt(i) );
 				}
 			}
-			if( Reflect.hasField( this.getChildAt(i), "noLayout" ) )
+			if( hasField( this.getChildAt(i), "noLayout" ) )
 			{
 				childrens.push( this.getChildAt(i) );
 				childrenPosition.push( this.getChildIndex( this.getChildAt(i) ) );
@@ -128,7 +127,7 @@ class UIComponent extends Sprite
 		 */
 	public var contentWidth(get, never):Float;
 	
-	private function get_contentWidth()
+	private function get_contentWidth():Float
 	{
 		return getWidth();
 	}
@@ -141,7 +140,7 @@ class UIComponent extends Sprite
 		var i:Int = this.numChildren - 1;
 		while(i >= 0)
 		{
-			if( Reflect.hasField( this.getChildAt(i), "isUIComponent" ) )
+			if( Std.is( this.getChildAt(i), UIComponent ) )
 			{
 				if( ! cast( this.getChildAt(i), UIComponent ).includeInLayout )
 				{
@@ -150,7 +149,7 @@ class UIComponent extends Sprite
 					this.removeChild( this.getChildAt(i) );
 				}
 			}
-			if( Reflect.hasField( this.getChildAt(i), "noLayout" ) )
+			if( hasField( this.getChildAt(i), "noLayout" ) )
 			{
 				childrens.push( this.getChildAt(i) );
 				childrenPosition.push( this.getChildIndex( this.getChildAt(i) ) );
@@ -176,7 +175,7 @@ class UIComponent extends Sprite
 		 */
 	public var contentHeight(get, never):Float;
 	
-	private function get_contentHeight()
+	private function get_contentHeight():Float
 	{
 		return getHeight();
 	}
@@ -227,7 +226,7 @@ class UIComponent extends Sprite
 		 */
 	public var enabled(get, set):Bool;
 	
-	private function get_enabled()
+	private function get_enabled():Bool
 	{
 		return _enabled;
 	}
@@ -245,7 +244,7 @@ class UIComponent extends Sprite
 		 */
 	public var maxWidth(get, set):Float;
 	
-	private function get_maxWidth()
+	private function get_maxWidth():Float
 	{
 		return _maxWidth;
 	}
@@ -263,7 +262,7 @@ class UIComponent extends Sprite
 		 */
 	public var maxHeight(get, set):Float;
 	
-	private function get_maxHeight()
+	private function get_maxHeight():Float
 	{
 		return _maxHeight;
 	}
@@ -281,7 +280,7 @@ class UIComponent extends Sprite
 		 */
 	public var minWidth(get, set):Float;
 	
-	private function get_minWidth()
+	private function get_minWidth():Float
 	{
 		return _minWidth;
 	}
@@ -299,7 +298,7 @@ class UIComponent extends Sprite
 		 */
 	public var minHeight(get, set):Float;
 	
-	private function get_minHeight()
+	private function get_minHeight():Float
 	{
 		return _minHeight;
 	}
@@ -315,7 +314,7 @@ class UIComponent extends Sprite
 	public function new()
 	{
 		super();
-		Reflect.setProperty(this, "isUIComponent", true);
+		//Reflect.setProperty(this, "isUIComponent", true);
 		this.visible = false;
 		style();
 		this.addEventListener(Event.ADDED, addedHandler);
@@ -342,7 +341,7 @@ class UIComponent extends Sprite
 	
 	private function enterFrameCreationHandler(event:Event = null):Void
 	{
-		isCreating = false;
+		//isCreating = false;
 		this.removeEventListener( Event.ENTER_FRAME, enterFrameCreationHandler );
 		invalidateProperties();
 		invalidateSize();
@@ -387,7 +386,7 @@ class UIComponent extends Sprite
 		
 		for(i in 0...this.numChildren)
 		{
-			if( Reflect.hasField( this.getChildAt(i), "isUIComponent" ) )
+			if( Std.is( this.getChildAt(i), UIComponent ) )
 			{
 				if( ! cast( this.getChildAt(i), UIComponent ).includeInLayout )
 				{
@@ -399,7 +398,7 @@ class UIComponent extends Sprite
 					if( this.layout.horizontalAlign == "contentJustify" || this.layout.horizontalAlign == "justify" ) continue;
 				}
 			}
-			if( Reflect.hasField( this.getChildAt(i), "noLayout" ) ) continue;
+			if( hasField( this.getChildAt(i), "noLayout" ) ) continue;
 			if( Std.is( this.layout, VerticalLayout ) )
 			{
 				this.getChildAt(i).y = previous == -1 ? 0 : this.getChildAt(previous).y + this.getChildAt(previous).height + this.layout.gap;
@@ -415,11 +414,11 @@ class UIComponent extends Sprite
 		}
 		for(i in 0...this.numChildren)
 		{
-			if( Reflect.hasField( this.getChildAt(i), "isUIComponent" ) )
+			if( Std.is( this.getChildAt(i), UIComponent ) )
 			{
 				if( ! cast( this.getChildAt(i), UIComponent ).includeInLayout )	continue;
 			}
-			if( Reflect.hasField( this.getChildAt(i), "noLayout" ) ) continue;
+			if( hasField( this.getChildAt(i), "noLayout" ) ) continue;
 			if( Std.is( this.layout, VerticalLayout ) )
 			{
 				if( this.layout.horizontalAlign == "left" )
@@ -457,14 +456,13 @@ class UIComponent extends Sprite
 	private function updateDisplayList(unscaledWidth:Float, unscaledHeight:Float):Void
 	{
 		//trace("UPDATELIST");
-		this.removeEventListener( Event.EXIT_FRAME, exitFrameHandler );
 		var contentWidth:Float = this.contentWidth;
 		var contentHeight:Float = this.contentHeight;
 		//this.visible = true;
-		this.dispatchEvent( new FlexEvent( FlexEvent.COMPONENT_COMPLETE ) );
 		isEnd = true;
 		checkIsEnd( this );
 		if( ! isEnd ) return;
+		isCreating = false;
 		if( ! isCreated )
 		{
 			isCreated = true;
@@ -474,6 +472,7 @@ class UIComponent extends Sprite
 		{
 			this.dispatchEvent( new Event( Event.RESIZE ) );
 		}
+		this.dispatchEvent( new FlexEvent( FlexEvent.COMPONENT_COMPLETE ) );
 		this.visible = true;
 		previousContentSize = new Rectangle( 0, 0, contentWidth, contentHeight );
 		//this.removeEventListener( FlexEvent.COMPONENT_COMPLETE, creationCompleteHandler );
@@ -495,7 +494,7 @@ class UIComponent extends Sprite
 		if( ! isEnd ) return;
 		for(i in 0...component.numChildren)
 		{
-			if( Reflect.hasField( component.getChildAt(i), "isUIComponent" ) )
+			if( Std.is( component.getChildAt(i), UIComponent ) )
 			{
 				var subComponent:UIComponent = cast( component.getChildAt(i), UIComponent );
 				if( subComponent.isCreating )
@@ -513,12 +512,15 @@ class UIComponent extends Sprite
 	
 	private function addedHandler(event:Event):Void
 	{
-		if( event.target == this ) return;
+		if( Std.is( event.target, UIComponent ) )
+		{
+			if( event.target == this ) return;
+		}
 		//if( Std.is( event.target, UIComponent ) )
 		if( this.getChildIndex( event.target ) == -1 ) return;
-		if( Reflect.hasField( event.target, "noAddedEvent" ) ) return;
-		if( Reflect.hasField( event.target, "noLayout" ) ) return;
-		if( Reflect.hasField( event.target, "isUIComponent" ) )
+		if( hasField( event.target, "noAddedEvent" ) ) return;
+		if( hasField( event.target, "noLayout" ) ) return;
+		if( Std.is( event.target, UIComponent ) )
 		{
 			if( ! cast( event.target, UIComponent ).includeInLayout ) return;
 			cast( event.target, UIComponent ).addEventListener( FlexEvent.COMPONENT_COMPLETE, creationCompleteHandler );
@@ -528,12 +530,15 @@ class UIComponent extends Sprite
 	
 	private function removedHandler(event:Event):Void
 	{
-		if( event.target == this ) return;
+		if( Std.is( event.target, UIComponent ) )
+		{
+			if( event.target == this ) return;
+		}
 		//if( Std.is( event.target, UIComponent ) )
 		if( this.getChildIndex( event.target ) == -1 ) return;
-		if( Reflect.hasField( event.target, "noAddedEvent" ) ) return;
-		if( Reflect.hasField( event.target, "noLayout" ) ) return;
-		if( Reflect.hasField( event.target, "isUIComponent" ) )
+		if( hasField( event.target, "noAddedEvent" ) ) return;
+		if( hasField( event.target, "noLayout" ) ) return;
+		if( Std.is( event.target, UIComponent ) )
 		{
 			if( ! cast( event.target, UIComponent ).includeInLayout ) return;
 			cast( event.target, UIComponent ).removeEventListener( FlexEvent.COMPONENT_COMPLETE, creationCompleteHandler );
@@ -546,7 +551,7 @@ class UIComponent extends Sprite
 		var contentSize:Rectangle = new Rectangle( 0, 0, this.contentWidth, this.contentHeight );
 		if( contentSize.equals( previousContentSize ) ) return;
 		//if( Std.is( event.target, UIComponent ) )
-		if( Reflect.hasField( event.target, "isUIComponent" ) )
+		if( Std.is( event.target, UIComponent ) )
 		{
 			cast( event.target, UIComponent ).addEventListener( FlexEvent.COMPONENT_COMPLETE, creationCompleteHandler );
 		}
@@ -557,18 +562,15 @@ class UIComponent extends Sprite
 	{
 		isEnd = true;
 		checkIsEnd( cast( event.currentTarget, UIComponent ) );
-		if( isEnd ) cast( event.currentTarget, UIComponent ).removeEventListener( FlexEvent.COMPONENT_COMPLETE, creationCompleteHandler );
-		if( ! isValidate ) this.addEventListener( Event.EXIT_FRAME, exitFrameHandler );
-		/*invalidateProperties();
-		invalidateSize();
-		invalidateDisplayList();*/
-		//createChildren();
-	}
-	
-	private function exitFrameHandler(event:Event):Void
-	{
-		this.removeEventListener( Event.EXIT_FRAME, exitFrameHandler );
-		enterFrameCreationHandler();
+		if( isEnd )
+		{
+			cast( event.currentTarget, UIComponent ).removeEventListener( FlexEvent.COMPONENT_COMPLETE, creationCompleteHandler );
+			/*invalidateProperties();
+			invalidateSize();
+			invalidateDisplayList();*/
+			//createChildren();
+			enterFrameCreationHandler();
+		}
 	}
 	
 	private function valueCommitHandler(event:FlexEvent):Void
@@ -583,23 +585,32 @@ class UIComponent extends Sprite
 	{
 		if( isCreating )
 		{
-			isValidate = true;
 			for(i in 0...this.numChildren)
 			{
-				if( Reflect.hasField( this.getChildAt(i), "isUIComponent" ) )
+				if( Std.is( this.getChildAt(i), UIComponent ) )
 				{
 					cast( this.getChildAt(i), UIComponent ).validate();
 				}
 			}
-			enterFrameCreationHandler();
-			isValidate = false;
+			if( isCreating ) enterFrameCreationHandler();
 		}
 	}
 	
-	/**
-		 * Disposes the resources of all children.
-		 */
-	public function dispose():Void
+	private function hasField(target:Dynamic, field:String):Bool
+	{
+		if( Reflect.hasField( target, field ) ) return Reflect.getProperty(target, field);
+		return false;
+	}
+	
+	@:dox(hide)
+	override public function getChildIndex(child:DisplayObject):Int
+	{
+		if( child.parent != this ) return -1;
+		return super.getChildIndex(child);
+	}
+	
+	@:dox(hide)
+	override public function dispose():Void
 	{
 		this.removeEventListener(Event.ADDED, addedHandler);
 		this.removeEventListener(Event.REMOVED, removedHandler);
@@ -607,7 +618,7 @@ class UIComponent extends Sprite
 		this.removeEventListener(FlexEvent.VALUE_COMMIT, valueCommitHandler);
 		for(i in 0...this.numChildren)
 		{
-			if( Reflect.hasField( this.getChildAt(i), "isUIComponent" ) )
+			if( Std.is( this.getChildAt(i), UIComponent ) )
 			{
 				cast( this.getChildAt(i), UIComponent ).dispose();
 			}

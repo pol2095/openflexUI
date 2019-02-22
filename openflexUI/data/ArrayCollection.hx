@@ -88,7 +88,7 @@ class ArrayCollection extends EventDispatcher
 	
 	public function removeAll():Void
 	{
-		this.dispatchEvent( new ArrayCollectionEvent( ArrayCollectionEvent.REMOVE_ALL, null, null ) );
+		this.dispatchEvent( new ArrayCollectionEvent( ArrayCollectionEvent.REMOVE_ALL, null, -1 ) );
 		source = [];
 	}
 	

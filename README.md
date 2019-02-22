@@ -1,4 +1,4 @@
-# Open Flex UI 0.3.0
+# Open Flex UI 0.3.1
 
 Say hello to [Open Flex UI](https://github.com/pol2095/openflexUI/).
 This project add a linear layout for positioning your sprite to OpenFl project.<br />

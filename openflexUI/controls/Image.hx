@@ -6,7 +6,7 @@ accordance with the terms of the accompanying license agreement.
 */
 package openflexUI.controls;
 
-import openfl.display.Bitmap;
+//import openfl.display.Bitmap;
 import openfl.display.BitmapData;
 import openfl.display.Sprite;
 import openfl.events.Event;
@@ -17,7 +17,7 @@ import openflexUI.controls.UIComponent;
  */
 class Image extends UIComponent
 {	
-	private var bitmap:Bitmap = new Bitmap();
+	private var bitmap:BitmapUI = new BitmapUI();
 	
 	private var _source:BitmapData;
 	/**
@@ -25,7 +25,7 @@ class Image extends UIComponent
 		 */
 	public var source(get, set):BitmapData;
 	
-	private function get_source()
+	private function get_source():BitmapData
 	{
 		return _source;
 	}
@@ -41,7 +41,7 @@ class Image extends UIComponent
 	public function new()
 	{
 		super();
-		Reflect.setProperty(bitmap, "noAddedEvent", true);
+		bitmap.noAddedEvent = true;
 		this.addChild( bitmap );
 		this.addEventListener( Event.ADDED_TO_STAGE, addedToStageHandler );
 	}

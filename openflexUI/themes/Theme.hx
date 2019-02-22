@@ -21,7 +21,7 @@ class Theme
 {
 	private static var shape:Shape = new Shape();
 	
-	private static var _chromeColor:Int = null;
+	private static var _chromeColor:Int= -1;
 	/**
 		 * The chrome color.
 		 */
@@ -39,7 +39,7 @@ class Theme
 		return value;
 	}
 	
-	private static var _overColor:Int = null;
+	private static var _overColor:Int= -1;
 	/**
 		 * The over color.
 		 */
@@ -56,7 +56,7 @@ class Theme
 		return value;
 	}
 	
-	private static var _downColor:Int = null;
+	private static var _downColor:Int= -1;
 	/**
 		 * The down color.
 		 */
@@ -73,7 +73,7 @@ class Theme
 		return value;
 	}
 	
-	private static var _borderColor:Int = null;
+	private static var _borderColor:Int= -1;
 	/**
 		 * The border color.
 		 */
@@ -90,7 +90,7 @@ class Theme
 		return value;
 	}
 	
-	private static var _iconColor:Int = null;
+	private static var _iconColor:Int= -1;
 	/**
 		 * The icon color.
 		 */
@@ -107,7 +107,7 @@ class Theme
 		return value;
 	}
 	
-	private static var _backgroundColor:Int = null;
+	private static var _backgroundColor:Int= -1;
 	/**
 		 * The background color.
 		 */
@@ -124,7 +124,7 @@ class Theme
 		return value;
 	}
 	
-	private static var _scrollBarColor:Int = null;
+	private static var _scrollBarColor:Int= -1;
 	/**
 		 * The scrollBar color.
 		 */

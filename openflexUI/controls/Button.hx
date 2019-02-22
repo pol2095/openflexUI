@@ -29,10 +29,10 @@ class Button extends UIComponent
 		 */
 	public static var RIGHT_ICON_PLACEMENT:String = "right";
 	
-	private var background:Sprite = new Sprite();
-	private var backgroundOver:Sprite = new Sprite();
-	private var backgroundDown:Sprite = new Sprite();
-	private var backgroundBorder:Sprite = new Sprite();
+	private var background:SpriteUI = new SpriteUI();
+	private var backgroundOver:SpriteUI = new SpriteUI();
+	private var backgroundDown:SpriteUI = new SpriteUI();
+	private var backgroundBorder:SpriteUI = new SpriteUI();
 	private var padding:Int = 4;
 	private var state:String = "upState";
 	private var labelItemRenderer:LabelItemRenderer;
@@ -50,7 +50,7 @@ class Button extends UIComponent
 		 */
 	public var label(get, set):String;
 	
-	private function get_label()
+	private function get_label():String
 	{
 		return _label;
 	}
@@ -68,7 +68,7 @@ class Button extends UIComponent
 		 */
 	public var textFormat(get, set):TextFormat;
 	
-	private function get_textFormat()
+	private function get_textFormat():TextFormat
 	{
 		return _textFormat;
 	}
@@ -86,7 +86,7 @@ class Button extends UIComponent
 		 */
 	public var icon(get, set):BitmapData;
 	
-	private function get_icon()
+	private function get_icon():BitmapData
 	{
 		return _icon;
 	}
@@ -106,7 +106,7 @@ class Button extends UIComponent
 		 */
 	public var iconPlacement(get, set):String;
 	
-	private function get_iconPlacement()
+	private function get_iconPlacement():String
 	{
 		return _iconPlacement;
 	}
@@ -126,7 +126,7 @@ class Button extends UIComponent
 		 */
 	public var toggle(get, set):Bool;
 	
-	private function get_toggle()
+	private function get_toggle():Bool
 	{
 		return _toggle;
 	}
@@ -151,7 +151,7 @@ class Button extends UIComponent
 		 */
 	public var selected(get, set):Bool;
 	
-	private function get_selected()
+	private function get_selected():Bool
 	{
 		return _selected;
 	}
@@ -181,7 +181,7 @@ class Button extends UIComponent
 		 */
 	public var itemRenderer(get, set):UIComponent;
 	
-	private function get_itemRenderer()
+	private function get_itemRenderer():UIComponent
 	{
 		return _itemRenderer;
 	}
@@ -207,7 +207,7 @@ class Button extends UIComponent
         backgroundBorder.graphics.endFill();
 		
 		//backgroundBorder.scale9Grid = new Rectangle( borderSize * 2, borderSize * 2, size - borderSize * 4, size - borderSize * 4 );
-		Reflect.setProperty(backgroundBorder, "noAddedEvent", true);
+		backgroundBorder.noAddedEvent = true;
 		this.addChild( backgroundBorder );
 		
 		size = 100 - borderSize * 2;
@@ -238,7 +238,7 @@ class Button extends UIComponent
 		}
 		
 		background.scale9Grid = rect;*/
-		Reflect.setProperty(background, "noAddedEvent", true);
+		background.noAddedEvent = true;
 		this.addChild( background );
 		
 		backgroundOver.graphics.beginFill(backgroundOverColor);
@@ -246,7 +246,7 @@ class Button extends UIComponent
         backgroundOver.graphics.endFill();
 		backgroundOver.x = backgroundOver.y = borderSize;
 		//backgroundOver.scale9Grid = new Rectangle( borderSize * 2, borderSize * 2, size - borderSize * 4, size - borderSize * 4 );
-		Reflect.setProperty(backgroundOver, "noAddedEvent", true);
+		backgroundOver.noAddedEvent = true;
 		backgroundOver.alpha = 0.1;
 		
 		size = 100 - borderSize * 3;
@@ -255,7 +255,7 @@ class Button extends UIComponent
         backgroundDown.graphics.endFill();
 		backgroundDown.x = backgroundDown.y = borderSize * 2;
 		//backgroundDown.scale9Grid = new Rectangle( borderSize * 2, borderSize * 2, size - borderSize * 4, size - borderSize * 4 );
-		Reflect.setProperty(backgroundDown, "noAddedEvent", true);
+		backgroundDown.noAddedEvent = true;
 		
 		this.addEventListener( Event.ADDED_TO_STAGE, addedToStageHandler );
 	}
@@ -326,10 +326,10 @@ class Button extends UIComponent
 	override private function style():Void
 	{
 		super.style();
-		if( Theme.chromeColor != null ) backgroundColor = Theme.chromeColor;
-		if( Theme.overColor != null ) backgroundOverColor = Theme.overColor;
-		if( Theme.downColor != null ) backgroundDownColor = Theme.downColor;
-		if( Theme.borderColor != null ) backgroundBorderColor = Theme.borderColor;
+		if( Theme.chromeColor != -1 ) backgroundColor = Theme.chromeColor;
+		if( Theme.overColor != -1 ) backgroundOverColor = Theme.overColor;
+		if( Theme.downColor != -1 ) backgroundDownColor = Theme.downColor;
+		if( Theme.borderColor != -1 ) backgroundBorderColor = Theme.borderColor;
 	}
 	
 	//override private function updateDisplayList(unscaledWidth:Float, unscaledHeight:Float):Void
@@ -350,7 +350,7 @@ class Button extends UIComponent
 		{
 			if( this.getChildIndex( itemRenderer ) != -1 ) this.removeChild( itemRenderer );
 			cast(itemRenderer, LabelItemRenderer).init( padding, background, backgroundOver, backgroundDown, backgroundBorder, label, textFormat, icon, minWidth, maxWidth, iconPlacement, borderSize, cornerRadius, backgroundColor, backgroundOverColor, backgroundDownColor, backgroundBorderColor );
-			if( ! Reflect.hasField( itemRenderer, "noAddedEvent" ) ) Reflect.setProperty(itemRenderer, "noAddedEvent", true);
+			itemRenderer.noAddedEvent = true;
 			this.addChild( itemRenderer );
 			itemRenderer.validate();
 		}
@@ -358,7 +358,7 @@ class Button extends UIComponent
 		{
 			labelItemRenderer = new LabelItemRenderer();
 			labelItemRenderer.init( padding, background, backgroundOver, backgroundDown, backgroundBorder, label, textFormat, icon, minWidth, maxWidth, iconPlacement, borderSize, cornerRadius, backgroundColor, backgroundOverColor, backgroundDownColor, backgroundBorderColor );
-			if( ! Reflect.hasField( labelItemRenderer, "noAddedEvent" ) ) Reflect.setProperty(labelItemRenderer, "noAddedEvent", true);
+			labelItemRenderer.noAddedEvent = true;
 			this.addChild( labelItemRenderer );
 			labelItemRenderer.validate();
 		}

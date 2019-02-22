@@ -9,7 +9,7 @@ package openflexUI.controls;
 import openfl.display.Sprite;
 import openfl.events.FocusEvent;
 import openfl.events.Event;
-import openfl.text.TextField;
+//import openfl.text.TextField;
 import openfl.text.TextFieldType;
 import openfl.text.TextFormat;
 import openfl.text.TextFieldAutoSize;
@@ -20,10 +20,10 @@ import openflexUI.controls.UIComponent;
  */
 class TextInput extends UIComponent
 {	
-	private var textField:TextField = new TextField();
-	private var backgroundFocusIn:Sprite = new Sprite();
-	private var backgroundFocusOut:Sprite = new Sprite();
-	private var backgroundBorder:Sprite = new Sprite();
+	private var textField:TextFieldUI = new TextFieldUI();
+	private var backgroundFocusIn:SpriteUI = new SpriteUI();
+	private var backgroundFocusOut:SpriteUI = new SpriteUI();
+	private var backgroundBorder:SpriteUI = new SpriteUI();
 	private var padding:Int = 4;
 	private var borderSize:Int = 1;
 	//private var cornerRadius:Int;
@@ -38,7 +38,7 @@ class TextInput extends UIComponent
 		 */
 	public var text(get, set):String;
 	
-	private function get_text()
+	private function get_text():String
 	{
 		return _text;
 	}
@@ -56,7 +56,7 @@ class TextInput extends UIComponent
 		 */
 	public var textFormat(get, set):TextFormat;
 	
-	private function get_textFormat()
+	private function get_textFormat():TextFormat
 	{
 		return _textFormat;
 	}
@@ -74,7 +74,7 @@ class TextInput extends UIComponent
 		 */
 	public var selectable(get, set):Bool;
 	
-	private function get_selectable()
+	private function get_selectable():Bool
 	{
 		return _selectable;
 	}
@@ -92,7 +92,7 @@ class TextInput extends UIComponent
 		 */
 	public var editable(get, set):Bool;
 	
-	private function get_editable()
+	private function get_editable():Bool
 	{
 		return _editable;
 	}
@@ -109,7 +109,7 @@ class TextInput extends UIComponent
 	{
 		super();
 		
-		Reflect.setProperty(textField, "noAddedEvent", true);
+		textField.noAddedEvent = true;
 		textField.type = TextFieldType.INPUT;
 		//textField.border = true;
 		textField.width = 300;
@@ -122,20 +122,20 @@ class TextInput extends UIComponent
 		backgroundFocusOut.graphics.drawRect(0, 0, size, size);
         backgroundFocusOut.graphics.endFill();
 		backgroundFocusOut.x = backgroundFocusOut.y = borderSize;
-		Reflect.setProperty(backgroundFocusOut, "noAddedEvent", true);
+		backgroundFocusOut.noAddedEvent = true;
 		
 		backgroundFocusIn.graphics.beginFill(backgroundFocusInColor);
         //backgroundFocusIn.graphics.drawRoundRect(0, 0, size, size, cornerRadius);
 		backgroundFocusIn.graphics.drawRect(0, 0, size, size);
         backgroundFocusIn.graphics.endFill();
 		backgroundFocusIn.x = backgroundFocusIn.y = - borderSize;
-		Reflect.setProperty(backgroundFocusIn, "noAddedEvent", true);
+		backgroundFocusIn.noAddedEvent = true;
 		
 		backgroundBorder.graphics.beginFill(backgroundBorderColor);
         //backgroundBorder.graphics.drawRoundRect(0, 0, size, size, cornerRadius);
 		backgroundBorder.graphics.drawRect(0, 0, size, size);
         backgroundBorder.graphics.endFill();
-		Reflect.setProperty(backgroundBorder, "noAddedEvent", true);
+		backgroundBorder.noAddedEvent = true;
 				
 		this.addEventListener( FocusEvent.FOCUS_IN, focusInHandler );
 		this.addEventListener( FocusEvent.FOCUS_OUT, focusOutHandler );
@@ -194,7 +194,7 @@ class TextInput extends UIComponent
 	{
 		//this.textField.width = Math.isNaN( this.width ) ? 300 : this.width - padding * 2;
 		
-		var textField:TextField = new TextField();
+		var textField:TextFieldUI = new TextFieldUI();
 		if( this.textFormat != null ) textField.defaultTextFormat = this.textFormat;
 		textField.text = "A";
 		textField.autoSize = TextFieldAutoSize.LEFT;
