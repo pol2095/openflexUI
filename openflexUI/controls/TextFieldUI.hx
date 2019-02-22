@@ -19,6 +19,12 @@ class TextFieldUI extends TextField
 	@:dox(hide)
 	public var noAddedEvent:Bool = false;
 	
+	@:dox(hide)
+	public function new()
+	{
+		super();
+	}
+	
 	/**
 		 * Disposes the resources of all children.
 		 */
