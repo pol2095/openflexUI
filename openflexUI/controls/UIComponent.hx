@@ -84,11 +84,8 @@ class UIComponent extends SpriteUI
 		return this.mask.height;
 	}
 	
-	private var _getWidth:Float = -1;
-		
 	private function getWidth():Float
 	{
-		if( _getWidth != -1 ) return _getWidth;
 		var width:Float = 0;
 		var childrens:Array<DisplayObject> = [];
 		var childrenPosition:Array<Int> = [];
@@ -117,7 +114,6 @@ class UIComponent extends SpriteUI
 		
 		//width = super.width;
 		width = measureSize( this ).width;
-		if( ! isCreating ) _getWidth = width;
 		
 		for(i in 0...childrens.length)
 		{
@@ -136,11 +132,8 @@ class UIComponent extends SpriteUI
 		return getWidth();
 	}
 	
-	private var _getHeight:Float = -1;
-		
 	private function getHeight():Float
 	{
-		if( _getHeight != -1 ) return _getHeight;
 		var height:Float = 0;
 		var childrens:Array<DisplayObject> = [];
 		var childrenPosition:Array<Int> = [];
@@ -169,7 +162,6 @@ class UIComponent extends SpriteUI
 		
 		//height = super.height;
 		height = measureSize( this ).height;
-		if( ! isCreating ) _getHeight = height;
 		
 		for(i in 0...childrens.length)
 		{
@@ -340,7 +332,6 @@ class UIComponent extends SpriteUI
 	private function createChildren():Void
 	{
 		//trace("CREATE CHILDREN");
-		_getWidth = _getHeight = -1;
 		if( ! isCreating )
 		{
 			this.addEventListener( Event.ENTER_FRAME, enterFrameCreationHandler );
@@ -352,6 +343,11 @@ class UIComponent extends SpriteUI
 	{
 		//isCreating = false;
 		this.removeEventListener( Event.ENTER_FRAME, enterFrameCreationHandler );
+		
+		isEnd = true;
+		checkIsEnd( this );
+		if( ! isEnd ) return;
+		
 		invalidateProperties();
 		invalidateSize();
 		invalidateDisplayList();
@@ -468,9 +464,9 @@ class UIComponent extends SpriteUI
 		var contentWidth:Float = this.contentWidth;
 		var contentHeight:Float = this.contentHeight;
 		//this.visible = true;
-		isEnd = true;
+		/*isEnd = true;
 		checkIsEnd( this );
-		if( ! isEnd ) return;
+		if( ! isEnd ) return;*/
 		isCreating = false;
 		if( ! isCreated )
 		{
@@ -550,7 +546,7 @@ class UIComponent extends SpriteUI
 		if( Std.is( event.target, UIComponent ) )
 		{
 			if( ! cast( event.target, UIComponent ).includeInLayout ) return;
-			cast( event.target, UIComponent ).removeEventListener( FlexEvent.COMPONENT_COMPLETE, creationCompleteHandler );
+			//cast( event.target, UIComponent ).removeEventListener( FlexEvent.COMPONENT_COMPLETE, creationCompleteHandler );
 		}
 		createChildren();
 	}
@@ -573,11 +569,12 @@ class UIComponent extends SpriteUI
 		checkIsEnd( cast( event.currentTarget, UIComponent ) );
 		if( isEnd )
 		{
-			cast( event.currentTarget, UIComponent ).removeEventListener( FlexEvent.COMPONENT_COMPLETE, creationCompleteHandler );
+			//cast( event.currentTarget, UIComponent ).removeEventListener( FlexEvent.COMPONENT_COMPLETE, creationCompleteHandler );
 			/*invalidateProperties();
 			invalidateSize();
 			invalidateDisplayList();*/
 			//createChildren();
+			if( ! isCreating ) isCreating = true;
 			enterFrameCreationHandler();
 		}
 	}
@@ -621,10 +618,11 @@ class UIComponent extends SpriteUI
 	@:dox(hide)
 	override public function dispose():Void
 	{
-		this.removeEventListener(Event.ADDED, addedHandler);
-		this.removeEventListener(Event.REMOVED, removedHandler);
-		this.removeEventListener(Event.RENDER, renderHandler);
-		this.removeEventListener(FlexEvent.VALUE_COMMIT, valueCommitHandler);
+		this.removeEventListener( Event.ADDED, addedHandler );
+		this.removeEventListener( Event.REMOVED, removedHandler );
+		this.removeEventListener( Event.RENDER, renderHandler );
+		this.removeEventListener( FlexEvent.COMPONENT_COMPLETE, creationCompleteHandler );
+		this.removeEventListener( FlexEvent.VALUE_COMMIT, valueCommitHandler );
 		for(i in 0...this.numChildren)
 		{
 			if( Std.is( this.getChildAt(i), UIComponent ) )

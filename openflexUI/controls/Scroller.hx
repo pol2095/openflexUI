@@ -102,6 +102,15 @@ class Scroller extends UIComponent
 		return _width;
 	}
 	
+	private var _getWidth:Float = 0;
+	
+	override private function getWidth():Float
+	{
+		if( ! isCreating ) return _getWidth;
+		_getWidth = super.getWidth();
+		return _getWidth;
+	}
+	
 	/*override private function get_width():Float
 	{
 		return viewPort.width;
@@ -123,6 +132,15 @@ class Scroller extends UIComponent
 	{
 		if( Math.isNaN( _height ) ) return getHeight();
 		return _height;
+	}
+	
+	private var _getHeight:Float = 0;
+	
+	override private function getHeight():Float
+	{
+		if( ! isCreating ) return _getHeight;
+		_getHeight = super.getHeight();
+		return _getHeight;
 	}
 	
 	/*override private function get_height():Float

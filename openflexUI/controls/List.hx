@@ -152,7 +152,6 @@ class List extends UIComponent
 	
 	private function createBackground():Void
 	{
-		trace("bnj");
 		background.graphics.clear();
 		background.graphics.beginFill(backgroundColor);
 		if( this.numChildren == 1 )
