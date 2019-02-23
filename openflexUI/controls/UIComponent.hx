@@ -477,8 +477,8 @@ class UIComponent extends SpriteUI
 	private function updateDisplayList(unscaledWidth:Float, unscaledHeight:Float):Void
 	{
 		//trace("UPDATELIST");
-		var contentWidth:Float = this.contentWidth;
-		var contentHeight:Float = this.contentHeight;
+		/*var contentWidth:Float = this.contentWidth;
+		var contentHeight:Float = this.contentHeight;*/
 		//this.visible = true;
 		/*isEnd = true;
 		checkIsEnd( this );
