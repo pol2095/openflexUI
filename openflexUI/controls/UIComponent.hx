@@ -80,8 +80,8 @@ class UIComponent extends SpriteUI
 	@:dox(hide)
 	#if flash @:setter(width) public #else override public #end function set_width(value:Float)
 	{
+		if( isCreating ) enterFrameCreationHandler();
 		super.width = value;
-		if( ! isCreating ) createChildren();
 		#if !flash return value; #end
 	}
 	
@@ -95,8 +95,8 @@ class UIComponent extends SpriteUI
 	@:dox(hide)
 	#if flash @:setter(height) public #else override public #end function set_height(value:Float)
 	{
+		if( isCreating ) enterFrameCreationHandler();
 		super.height = value;
-		if( ! isCreating ) createChildren();
 		#if !flash return value; #end
 	}
 	
