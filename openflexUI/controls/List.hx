@@ -29,7 +29,7 @@ class List extends UIComponent
 	
 	private var _width:Float = Math.NaN;
 	
-	#if flash @:setter(width) public #else override public #end function set_width(value:Float)
+	#if flash @:setter(width) override public #else override public #end function set_width(value:Float)
 	{
 		_width = value;
 		scroller.width = _width;
@@ -38,7 +38,7 @@ class List extends UIComponent
 	
 	private var _height:Float = Math.NaN;
 	
-	#if flash @:setter(height) public #else override public #end function set_height(value:Float)
+	#if flash @:setter(height) override public #else override public #end function set_height(value:Float)
 	{
 		_height = value;
 		scroller.height = _height;

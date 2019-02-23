@@ -68,7 +68,7 @@ class UIComponent extends SpriteUI
 	}
 	
 	private var isEnd:Bool;
-	private var previousContentSize:Rectangle = new Rectangle();
+	//private var previousContentSize:Rectangle = new Rectangle();
 	
 	@:dox(hide)
 	#if flash @:getter(width) public #else override public #end function get_width():Float
@@ -78,10 +78,26 @@ class UIComponent extends SpriteUI
 	}
 	
 	@:dox(hide)
+	#if flash @:setter(width) public #else override public #end function set_width(value:Float)
+	{
+		super.width = value;
+		if( ! isCreating ) createChildren();
+		#if !flash return value; #end
+	}
+	
+	@:dox(hide)
 	#if flash @:getter(height) public #else override public #end function get_height():Float
 	{
 		if( this.mask == null ) return getHeight();
 		return this.mask.height;
+	}
+	
+	@:dox(hide)
+	#if flash @:setter(height) public #else override public #end function set_height(value:Float)
+	{
+		super.height = value;
+		if( ! isCreating ) createChildren();
+		#if !flash return value; #end
 	}
 	
 	private function getWidth():Float
@@ -319,7 +335,7 @@ class UIComponent extends SpriteUI
 		style();
 		this.addEventListener(Event.ADDED, addedHandler);
 		this.addEventListener(Event.REMOVED, removedHandler);
-		this.addEventListener(Event.RENDER, renderHandler);
+		//this.addEventListener(Event.RENDER, renderHandler);
 		this.addEventListener(FlexEvent.VALUE_COMMIT, valueCommitHandler);
 	}
 	
@@ -479,7 +495,7 @@ class UIComponent extends SpriteUI
 		}
 		this.dispatchEvent( new FlexEvent( FlexEvent.COMPONENT_COMPLETE ) );
 		this.visible = true;
-		previousContentSize = new Rectangle( 0, 0, contentWidth, contentHeight );
+		//previousContentSize = new Rectangle( 0, 0, contentWidth, contentHeight );
 		//this.removeEventListener( FlexEvent.COMPONENT_COMPLETE, creationCompleteHandler );
 		
 		if( this.enabled )
@@ -551,7 +567,7 @@ class UIComponent extends SpriteUI
 		createChildren();
 	}
 	
-	private function renderHandler(event:Event):Void
+	/*private function renderHandler(event:Event):Void
 	{
 		var contentSize:Rectangle = new Rectangle( 0, 0, this.contentWidth, this.contentHeight );
 		if( contentSize.equals( previousContentSize ) ) return;
@@ -561,7 +577,7 @@ class UIComponent extends SpriteUI
 			cast( event.target, UIComponent ).addEventListener( FlexEvent.COMPONENT_COMPLETE, creationCompleteHandler );
 		}
 		createChildren();
-	}
+	}*/
 	
 	private function creationCompleteHandler(event:FlexEvent):Void
 	{
@@ -620,7 +636,7 @@ class UIComponent extends SpriteUI
 	{
 		this.removeEventListener( Event.ADDED, addedHandler );
 		this.removeEventListener( Event.REMOVED, removedHandler );
-		this.removeEventListener( Event.RENDER, renderHandler );
+		//this.removeEventListener( Event.RENDER, renderHandler );
 		this.removeEventListener( FlexEvent.COMPONENT_COMPLETE, creationCompleteHandler );
 		this.removeEventListener( FlexEvent.VALUE_COMMIT, valueCommitHandler );
 		for(i in 0...this.numChildren)

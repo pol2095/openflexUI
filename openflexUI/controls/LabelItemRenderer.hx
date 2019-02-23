@@ -95,6 +95,11 @@ class LabelItemRenderer extends UIComponent
 		{
 			image.source = icon;
 			this.addChild( image );
+			if( icon != null && this.label != "" )
+			{
+				image.scaleY = labelUI.height / icon.height;
+				image.scaleX = image.scaleY;
+			}
 			image.validate();
 		}
 		
@@ -108,8 +113,8 @@ class LabelItemRenderer extends UIComponent
 		}
 		else if( this.label != "" )
 		{
-			image.height = labelUI.height;
-			image.scaleX = image.scaleY;
+			/*image.height = labelUI.height;
+			image.scaleX = image.scaleY;*/
 			
 			if( ! Math.isNaN( maxWidth ) )
 			{

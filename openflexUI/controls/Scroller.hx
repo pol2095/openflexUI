@@ -117,7 +117,7 @@ class Scroller extends UIComponent
 	}*/
 	
 	@:dox(hide)
-	#if flash @:setter(width) public #else override public #end function set_width(value:Float)
+	#if flash @:setter(width) override public #else override public #end function set_width(value:Float)
 	{
 		_width = value;
 		createChildren();
@@ -149,7 +149,7 @@ class Scroller extends UIComponent
 	}*/
 	
 	@:dox(hide)
-	#if flash @:setter(height) public #else override public #end function set_height(value:Float)
+	#if flash @:setter(height) override public #else override public #end function set_height(value:Float)
 	{
 		_height = value;
 		createChildren();
