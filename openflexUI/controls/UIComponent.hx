@@ -80,7 +80,7 @@ class UIComponent extends SpriteUI
 	@:dox(hide)
 	#if flash @:setter(width) public #else override public #end function set_width(value:Float)
 	{
-		invalidateSize();
+		if( isCreating ) invalidateSize();
 		super.width = value;
 		createChildren();
 		#if !flash return value; #end
@@ -96,7 +96,7 @@ class UIComponent extends SpriteUI
 	@:dox(hide)
 	#if flash @:setter(height) public #else override public #end function set_height(value:Float)
 	{
-		invalidateSize();
+		if( isCreating ) invalidateSize();
 		super.height = value;
 		createChildren();
 		#if !flash return value; #end
