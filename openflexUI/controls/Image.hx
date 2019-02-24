@@ -64,7 +64,7 @@ class Image extends UIComponent
 		/*if( bitmap != null ) this.removeChild( bitmap );
 		bitmap = new Bitmap( source );
 		this.addChild( bitmap );*/
-		bitmap.bitmapData = source;
+		if( bitmap.bitmapData != source ) bitmap.bitmapData = source;
 	}
 	
 	@:dox(hide)
