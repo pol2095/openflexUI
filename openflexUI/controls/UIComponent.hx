@@ -82,6 +82,7 @@ class UIComponent extends SpriteUI
 	{
 		if( isCreating ) enterFrameCreationHandler();
 		super.width = value;
+		createChildren();
 		#if !flash return value; #end
 	}
 	
@@ -97,6 +98,7 @@ class UIComponent extends SpriteUI
 	{
 		if( isCreating ) enterFrameCreationHandler();
 		super.height = value;
+		createChildren();
 		#if !flash return value; #end
 	}
 	
