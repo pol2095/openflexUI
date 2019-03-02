@@ -71,7 +71,7 @@ class BorderContainer extends UIComponent
 	
 	private var _backgroundVisible:Bool = true;
 	/**
-		 * Determines if the layout backgroung is visible.
+		 * Determines if the backgroung is visible.
 		 *
 		 * The default value is `true`
 		 */
